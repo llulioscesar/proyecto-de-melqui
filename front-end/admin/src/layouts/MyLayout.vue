@@ -1,0 +1,77 @@
+<template>
+  <q-layout view="lHh Lpr lFf">
+    <q-layout-header>
+      <q-toolbar
+        color="primary"
+        :glossy="$q.theme === 'mat'"
+        :inverted="$q.theme === 'ios'"
+      >
+        <q-btn
+          flat
+          dense
+          round
+          @click="leftDrawerOpen = !leftDrawerOpen"
+          aria-label="Menu"
+        >
+          <q-icon name="menu" />
+        </q-btn>
+
+        <q-toolbar-title>
+          Mr Tata
+          <div slot="subtitle">Admin</div>
+        </q-toolbar-title>
+      </q-toolbar>
+    </q-layout-header>
+
+    <q-layout-drawer
+      v-model="leftDrawerOpen"
+      :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null"
+    >
+      <q-list
+        no-border
+        link
+        inset-delimiter
+      >
+        <q-list-header>Menu</q-list-header>
+        <q-item to="/app" exact>
+          <q-item-main label="Ventas"/>
+        </q-item>
+        <q-item to="/app/pedidos" exact>
+          <q-item-main label="Pedidos"/>
+        </q-item>
+        <q-item to="/app/clientes" exact>
+          <q-item-main label="Clientes"/>
+        </q-item>
+        <q-item to="/app/inventario" exact>
+          <q-item-main label="Inventario"/>
+        </q-item>
+        <q-item to="/app/productos" exact>
+          <q-item-main label="Productos"/>
+        </q-item>
+        <q-item to="/app/cuenta" exact>
+          <q-item-main label="Cuenta"/>
+        </q-item>
+      </q-list>
+    </q-layout-drawer>
+
+    <q-page-container>
+      <router-view />
+    </q-page-container>
+  </q-layout>
+</template>
+
+<script>
+import { openURL } from 'quasar'
+
+export default {
+  name: 'MyLayout',
+  data () {
+    return {
+      leftDrawerOpen: this.$q.platform.is.desktop
+    }
+  },
+}
+</script>
+
+<style>
+</style>
