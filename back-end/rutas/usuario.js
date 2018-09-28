@@ -5,7 +5,6 @@ var router = express.Router()
 
 import admin from 'firebase-admin'
 
-
 router.post('/insertar', (req, res) => {
     admin.auth().createUser({
         email: req.body.correo,
