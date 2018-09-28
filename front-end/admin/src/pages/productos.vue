@@ -31,7 +31,7 @@
     </div>
     <br><br>
     <q-table :data="objs" :columns="columnas" :filter="buscar">
-      <template slot="top-right" slot-scope="props">
+      <template slot="top-left" slot-scope="props">
         <q-search hide-underline v-model="buscar" />
       </template>
       <q-tr slot="body" slot-scope="props" :props="props">
@@ -161,6 +161,19 @@ export default {
         this.$q.notify('No se pudo obtener los productos')
       }, 'producto/listar')
     },
+    reset(){
+      this.id = 0
+      this.nombre = ''
+      this.ref = ''
+      this.editar = false
+      this.id= 0
+      this.deshabilitado = false
+      this.descripcion = ''
+      this.compra = ''
+      this.venta = ''
+      this.foto =  null
+      this.categoria = 'Cerveza'
+    },
     ejecutar(){
       if(this.nombre == ''){
         this.$q.notify('falta el nombre')
@@ -189,7 +202,8 @@ export default {
         }else{
           console.log(datos)
           http(datos, result => {
-            console.log(result)
+            this.objs.push(JSON.parse(JSON.stringify(result.datos)))
+            this.reset()
           }, e => {
             this.$q.notify('Ocurrio un problema. Intente mas tarde')
           }, 'producto/insertar')
