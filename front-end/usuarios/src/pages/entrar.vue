@@ -168,7 +168,7 @@ export default {
     },
     registroSocial(datos) {
       this.$axios
-        .post("http://192.168.1.200:3000/usuario/social", datos)
+        .post("http://127.0.0.1:3000/usuario/social", datos)
         .then(result => {
           if (result.data.error == false) {
             let user = result.data.datos;
