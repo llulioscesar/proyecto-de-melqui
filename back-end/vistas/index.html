@@ -1,61 +1,69 @@
 <!DOCTYPE html>
-<html lang="es-co">
+<html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>JCesar</title>
-    <link rel="icon" href="favicon.ico" />
-    <meta name="description" content="Desarollo de software y App moviles a la medida, web sites, diseño de la interfaz de usuario, desarrollo y lanzamiento de su aplicación en el App Store / Google Play">
-    <meta name="author" content="Julio César Caicedo Santos" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/plugins.min.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+    <title>Mr Tata</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
+
+    <style>
+        body,
+        html {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background: url(img/home_slide-landing-bg.jpg) no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        .margen{
+            margin-top: 200px;
+        }
+        .margen2{
+            margin-top: 250px;
+        }
+        @media(max-width:767px){
+            .margen{
+                margin-top: 50px;
+            }
+            .margen2{
+                margin-top: 90px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <div class="preloader">
-        <div class="anim pulse"><i class="fab fa-cloudversify"></i></div>
-    </div>
-    <div class="preloader-left"></div>
-    <section class="home img-bg" style="background: url(images/yo.jpg) 0 0; background-size: cover;background-position: center;">
-        <div class="gradient-overlay4 opacity7"></div>
-        <div class="container">
-            <div class="name-block">
-                <div class="name-block-container">
-                    <h1><span>Hola, soy</span>Julio César</h1>
-                    <h2>Diseñador y Desarrollador</h2>
-                    <a href="#" class="btn btn-download">Iniciar Sesion</a>
-                    <ul class="social">
-                        <li><a href="#"><i class="fab fa-facebook"></i></i></a></li>
-                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                        <li><a href="#"><i class="fab fa-youtube"></i></a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="menu-blocks">
-                <div class="about-block menu-block">
-                    <div class="about-block-container">
-                        <h2 class="about menu-item">Resumen</h2>
-                    </div>
-                </div>
-                <div class="portfolio-block  menu-block">
-                    <div class="portfolio-block-container">
-                        <h2 class="portfolio menu-item">Productos</h2>
-                    </div>
-                </div>
-                <div class="blog-block  menu-block">
-                    <div class="blog-block-container">
-                        <h2 class="blog menu-item">Blog</h2>
-                    </div>
-                </div>
-                <div class="contact-block  menu-block">
-                    <div class="contact-block-container">
-                        <h2 class="contact menu-item">Contacto</h2>
-                    </div>
-                </div>
+    
+    <h1 class="margen" style="text-align: center;font-size: 3rem;color:white">Mr Tata</h1>
+<br><br>
+    <h3 class="text-center" style="color:white">DONDE HAY DIVERSIÓN HAY CERVEZA</h3>
+    <div class="margen2"></div>
+    <h4 class="text-center" style="color:white">Descarga nuestra app y pide a domicilio</h4>
+
+    <div class="row" style="max-width:500px;margin:20px auto 0 auto;">
+        <div class="col-xs-12 col-md-6" style="margin-bottom:20px">
+            <img src="img/google-play.png" alt="" style="max-width:200px;width:100%;margin:auto;display: block;">
         </div>
-    </section>
-    <script src="/js/plugins.min.js"></script>
-    <script src="/js/main.js"></script>
+        <hr>
+        <div class="col-xs-12 col-md-6">
+            <img src="img/app-store.png" alt="" style="max-width:200px;width:100%;margin:auto;display: block;">
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>
