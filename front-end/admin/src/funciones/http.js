@@ -10,7 +10,7 @@ export default function(datos, callback, callbackError, ruta){
         }
     }
 
-    axios.post('http://127.0.0.1:3000/' + (ruta != null ? ruta : ''), datos, settings)
+    axios.post('http://142.44.242.71/' + (ruta != null ? ruta : ''), datos, settings)
         .then(result => {
             callback(result.data)
         }).catch(err => {

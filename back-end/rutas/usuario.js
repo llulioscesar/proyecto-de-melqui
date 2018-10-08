@@ -5,6 +5,10 @@ var router = express.Router()
 
 import admin from 'firebase-admin'
 
+router.get('/', (req, res) => {
+    res.send('ok')
+})
+
 router.post('/insertar', (req, res) => {
     admin.auth().createUser({
         email: req.body.correo,
@@ -45,17 +49,6 @@ router.post('/social', (req, res) => {
         }).then(result => {
             if (result == null) {
                 return Usuario.create(req.body, t)
-                    .then(usuario => {
-                        admin.auth().getUser(usuario.uid)
-                            .then(userRecord => {
-                                return usuario
-                            })
-                            .catch(error => {
-                                console.log("Error fetching user data:", error);
-                                error.status = 401
-                                return next(error)
-                            });
-                    })
             } else {
                 return result
             }
