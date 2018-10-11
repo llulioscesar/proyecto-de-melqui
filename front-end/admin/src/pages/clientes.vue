@@ -179,7 +179,11 @@ export default {
       } else if (ok){
         this.$q.notify('La cedula ya existe')
       } else{
+        if(this.editar){
 
+        }else{
+          
+        }
       }
     },
     editarDatos(row){
