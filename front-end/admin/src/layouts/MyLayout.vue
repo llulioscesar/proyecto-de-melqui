@@ -2,10 +2,7 @@
   <q-layout view="lHh Lpr lFf">
     <q-layout-header>
       <q-toolbar
-        color="primary"
-        :glossy="$q.theme === 'mat'"
-        :inverted="$q.theme === 'ios'"
-      >
+        color="primary">
         <q-btn
           flat
           dense
@@ -74,4 +71,8 @@ export default {
 </script>
 
 <style>
+.img-producto{
+  object-fit: cover;
+  object-position: center;
+}
 </style>

@@ -63,4 +63,18 @@ router.post('/social', (req, res) => {
     })
 })
 
+router.post('/clientes', (req, res) => {
+    return sequelize.transaction(t => {
+        return Usuario.findAll({
+            where:{
+                rol: 'cliente'
+            }
+        })
+    }).then( result => {
+        res.json({datos: result})
+    }).catch(e => {
+        res.status(500).json(error(e))
+    })
+})
+
 export default router
