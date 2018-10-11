@@ -12,7 +12,7 @@ router.post('/insertar', (req, res) => {
         password: req.body.contraseña,
         displayName: req.body.nombre
     }
-    if(req.body.celular == ''){
+    if (req.body.celular == '') {
         delete doc.phoneNumber
     }
     admin.auth().createUser(doc).then(userRecord => {
@@ -35,8 +35,45 @@ router.post('/insertar', (req, res) => {
     }).catch(e => {
         admin.auth().deleteUser(req.body.uid)
         res.status(500)
-                .json(error(e))
+            .json(error(e))
     })
+})
+
+router.post('/editar', async (req, res) => {
+
+    let doc = {
+        displayName: req.body.nombre,
+        email: req.body.correo,
+        disabled: req.body.deshabilitado,
+        phoneNumber: '+57' + req.body.celular,
+        password: req.body.contraseña
+    }
+    if (req.body.celular == '') {
+        delete doc.phoneNumber
+    }
+    if (req.body.contraseña == '') {
+        delete doc.password
+    }
+
+    admin.auth().updateUser(req.body.uid, doc)
+        .then(userRecord => {
+            return sequelize.transaction(t => {
+                return Usuario.update(req.body, {
+                    where: {
+                        id: req.body.id
+                    },
+                    transaction: t
+                })
+            }).then(result => {
+                res.json({
+                    datos: !!result[0]
+                })
+            }).catch(e => {
+                res.status(500).json(error(e))
+            })
+        }).catch(e => {
+            res.status(500).json(error(e))
+        })
 })
 
 router.post('/social', (req, res) => {
@@ -66,12 +103,13 @@ router.post('/social', (req, res) => {
 router.post('/clientes', (req, res) => {
     return sequelize.transaction(t => {
         return Usuario.findAll({
-            where:{
+            where: {
                 rol: 'cliente'
-            }
+            },
+            transaction: t
         })
-    }).then( result => {
-        res.json({datos: result})
+    }).then(result => {
+        res.json({ datos: result })
     }).catch(e => {
         res.status(500).json(error(e))
     })

@@ -20,6 +20,12 @@
       <div class="col-xs-12 col-md-3 ">
         <q-input class="q-mx-md" type="number" float-label="Celular" v-model="celular"></q-input>
       </div>
+      <div class="col-xs-12 col-md-3 ">
+        <q-input class="q-mx-md" type="password" float-label="Contraseña" v-model="contraseña"></q-input>
+      </div>
+      <div class="col-xs-12 col-md-2 q-mt-md  ">
+        <q-checkbox class="q-mx-md" label="Deshabilitado" v-model="deshabilitado"/>
+      </div>
       <div class="col-xs-12 col-md-4 q-mt-md">
         <q-btn-group>
           <q-btn :loading="cargando" :label="editar ? 'Actualizar' : 'Guardar'" color="primary" @click="ejecutar"/>
@@ -54,7 +60,7 @@
         </q-td>
         <q-td auto-width>
           <q-btn color="secondary" t label="Editar" class="q-mr-sm" @click="editarDatos(props.row)"/>
-          <q-btn v-if="props.row.deshabilitado == false" color="negative" round delete icon="delete" @click="eliminar(props.row.id)" />
+          <q-btn v-if="props.row.deshabilitado == false" color="negative" round delete icon="delete" @click="eliminar(props.row)" />
         </q-td>
       </q-tr>
     </q-table>
@@ -77,6 +83,8 @@ export default {
       correo: '',
       direccion: '',
       celular: '',
+      contraseña: '',
+      deshabilitado: false,
       objs:[],
       columnas:[
         {
@@ -149,6 +157,8 @@ export default {
       this.correo = ''
       this.direccion = ''
       this.celular = ''
+      this.contraseña = ''
+      this.deshabilitado = false
     },
     ejecutar(){
       this.cedula = this.cedula.trim()
@@ -156,6 +166,7 @@ export default {
       this.celular = this.celular.trim()
       this.correo = this.correo.trim()
       this.direccion = this.direccion.trim()
+      this.contraseña = this.contraseña.trim()
 
       let ok = false
 
@@ -166,6 +177,19 @@ export default {
         }
       });
 
+      let doc = {
+        id: this.id,
+        cedula: this.cedula,
+        nombre: this.nombre,
+        correo: this.correo,
+        direccion: this.direccion,
+        celular: this.celular,
+        deshabilitado: this.deshabilitado,
+        contraseña: this.contraseña,
+        rol: 'cliente',
+        uid: this.uid
+      }
+
       if(this.cedula == ''){
         this.$q.notify('Ingrese un numero de cedula')
       } else if(this.nombre == ''){
@@ -174,15 +198,36 @@ export default {
         this.$q.notify('Ingrese el correo del cliente')
       }else if(this.direccion == ''){
         this.$q.notify('Ingrese la direccion del cliente')
-      } else if(this.isEmail(this.correo)){
+      } else if(!this.isEmail(this.correo)){
         this.$q.notify('Ingrese una direccion de correo valida')
-      } else if (ok){
-        this.$q.notify('La cedula ya existe')
       } else{
+        this.cargando = true
         if(this.editar){
+          http(doc, result => {
+            this.reset()
+            this.cargandoT = true
+            this.cargar()
+          }, e => {
+            this.$q.notify(e)
+            this.cargando = false
+          }, 'usuario/editar')
 
         }else{
-          
+          if (ok){
+            this.$q.notify('La cedula ya existe')
+          } else if(this.contraseña == ''){
+            this.$q.notify('Ingrese una contraseña para el cliente')
+          } else{
+            this.cargando = true
+            http(doc, result => {
+              this.reset()
+              this.cargandoT = true
+              this.cargar()
+              }, e => {
+                this.cargando = false
+                this.$q.notify(e)
+              }, 'usuario/insertar')
+          }
         }
       }
     },
@@ -196,10 +241,25 @@ export default {
       this.cedula = temp.cedula
       this.celular = temp.celular
       this.direccion = temp.direccion
+      this.deshabilitado = temp.deshabilitado
       window.scrollTo(0, 0);
     },
-    eliminar(id){
-
+    eliminar(row){
+      this.$q.dialog({
+        title: 'Deshabilitar cliente',
+        message: '¿Desea deshabilitar el cliente?',
+        ok: 'Si',
+        cancel: 'No'
+      }).then(() => {
+        http({id: row.id, uid: row.uid, deshabilitado: true,celular:'',contraseña:''},result => {
+          this.reset()
+          this.cargandoT = true
+          this.cargar()
+        }, e => {
+          this.cargando = false
+          this.$q.notify(e)
+        }, 'usuario/editar')
+      })
     },
     isEmail(correo) {
       var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
