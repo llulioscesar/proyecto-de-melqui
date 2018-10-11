@@ -38,7 +38,7 @@
       </div>
     </div>
     <br><br>
-    <q-table :data="objs" :columns="columnas" :filter="buscar" :loading="cargandoT" color="primary"> 
+    <q-table :data="objs" row-key="name" :columns="columnas" :filter="buscar" :loading="cargandoT" color="primary"> 
       <template slot="top-left" slot-scope="props">
         <q-search hide-underline placeholder="Buscar producto" v-model="buscar" />
       </template>

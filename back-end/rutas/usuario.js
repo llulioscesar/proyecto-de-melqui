@@ -5,17 +5,17 @@ var router = express.Router()
 
 import admin from 'firebase-admin'
 
-router.get('/', (req, res) => {
-    res.send('ok')
-})
-
 router.post('/insertar', (req, res) => {
-    admin.auth().createUser({
+    let doc = {
         email: req.body.correo,
         phoneNumber: '+57' + req.body.celular,
         password: req.body.contraseña,
         displayName: req.body.nombre
-    }).then(userRecord => {
+    }
+    if(req.body.celular == ''){
+        delete doc.phoneNumber
+    }
+    admin.auth().createUser(doc).then(userRecord => {
         delete req.body.contraseña
         req.body.uid = userRecord.uid
         return sequelize.transaction(t => {
