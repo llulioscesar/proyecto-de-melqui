@@ -11,8 +11,7 @@ const sequelize = new Sequelize('melqui', 'root', '', {
     min: 0,
     acquire: 30000,
     idle: 10000
-  },
-  version: 1
+  }
 })
 
 export default sequelize

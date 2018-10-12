@@ -1,5 +1,5 @@
 require('babel-core/register');
-var app = require('./app'); 
+var app = require('./app');
 var http = require('http');
 var debug = require('debug')('express-sequelize');
 var db = require('./database');
@@ -13,8 +13,8 @@ app.set('ipaddress', server_ip_address)
 var server = http.createServer(app)
 
 server.listen(port, server_ip_address, () => {
-  console.log( "Listening on " + server_ip_address + ", port " + port )
-  db.sequelize.sync({ force: false}).then(() => {
+  console.log("Listening on " + server_ip_address + ", port " + port)
+  db.sequelize.sync({ force: false }).then(() => {
     console.log('MARIADB RUNNING');
   }).catch(err => {
     console.log(err);
