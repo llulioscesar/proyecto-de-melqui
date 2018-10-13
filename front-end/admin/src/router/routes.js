@@ -12,6 +12,8 @@ const routes = [
       { path: 'pedidos', component: () => import('pages/pedidos.vue')},
       { path: 'clientes', component: () => import('pages/clientes.vue')},
       { path: 'inventario', component: () => import('pages/inventario.vue')},
+      { path: 'entradas', component: () => import('pages/entradas.vue')},
+      { path: 'salidas', component: () => import('pages/salidas.vue') },
       { path: 'productos', component: () => import('pages/productos.vue')},
       { path: 'cuenta', component: () => import('pages/cuenta.vue')}
     ]

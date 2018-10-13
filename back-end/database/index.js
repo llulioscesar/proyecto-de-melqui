@@ -18,8 +18,6 @@ Entrada.belongsTo(Producto, { foreignKey: 'productoId' })
 Producto.hasMany(Salida, { foreignKey: 'productoId', onDelete: 'cascade' })
 Salida.belongsTo(Producto, { foreignKey: 'productoId' })
 
-
-
 export {
     sequelize,
     Producto,

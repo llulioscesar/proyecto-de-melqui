@@ -12,7 +12,7 @@
           <br>
           <q-input v-model="correo" type="email" placeholder="Correo" clearable/>
           <br>
-          <q-input v-model="clave" type="password" placeholder="Contraseña" clearable />
+          <q-input v-model="clave" @keyup.enter="login" type="password" placeholder="Contraseña" clearable />
           <br>
         </q-card-main>
         <q-card-actions class="q-px-md q-pb-md q-pt-md bg-grey-3">
@@ -81,7 +81,7 @@ export default {
             type: "negative",
             timeout: 6000
           });
-        });
+        }); 
     },
     isEmail(correo) {
       var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

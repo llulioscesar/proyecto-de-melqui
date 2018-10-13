@@ -24,11 +24,7 @@
       v-model="leftDrawerOpen"
       :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null"
     >
-      <q-list
-        no-border
-        link
-        inset-delimiter
-      >
+      <q-list no-border link inset-delimiter >
         <q-list-header>Menu</q-list-header>
         <q-item to="/app" exact>
           <q-item-main label="Ventas"/>
@@ -39,9 +35,20 @@
         <q-item to="/app/clientes" exact>
           <q-item-main label="Clientes"/>
         </q-item>
-        <q-item to="/app/inventario" exact>
-          <q-item-main label="Inventario"/>
-        </q-item>
+        
+        <q-collapsible label="Inventario">
+          <q-item to="/app/entradas" exact>
+            <q-item-main label="Entradas"/>
+          </q-item>
+          <q-item to="/app/salidas" exact>
+            <q-item-main label="Salidas"/>
+          </q-item>
+          <q-item to="/app/inventario" exact>
+            <q-item-main label="Existencias"/>
+          </q-item>
+        </q-collapsible>
+
+        
         <q-item to="/app/productos" exact>
           <q-item-main label="Productos"/>
         </q-item>
@@ -58,20 +65,20 @@
 </template>
 
 <script>
-import { openURL } from 'quasar'
+import { openURL } from "quasar";
 
 export default {
-  name: 'MyLayout',
-  data () {
+  name: "MyLayout",
+  data() {
     return {
       leftDrawerOpen: this.$q.platform.is.desktop
-    }
-  },
-}
+    };
+  }
+};
 </script>
 
 <style>
-.img-producto{
+.img-producto {
   object-fit: cover;
   object-position: center;
 }
