@@ -1,12 +1,13 @@
 import express from 'express'
 import {sequelize, Producto, Inventario} from '../database'
 import error from '../funciones/error'
-
+import Sequelize from 'sequelize'
 import moment from 'moment'
+const Op = Sequelize.Op
 
 var router = express.Router()
 
-router.post('/insertar', async(req, res) => {
+router.post('/insertar', (req, res) => {
 
     let doc = {
         id:0,
@@ -14,7 +15,7 @@ router.post('/insertar', async(req, res) => {
         entradas:0,
         salidas: 0,
         stock:0,
-        fecha: 1212121,
+        fecha: moment().startOf('day').unix(),
         producto:[req.body]
     }
 
@@ -30,7 +31,7 @@ router.post('/insertar', async(req, res) => {
     })
 })
 
-router.post('/actualizar', async(req, res) => {
+router.post('/actualizar', (req, res) => {
     return sequelize.transaction(t => {
         return Producto.update(req.body, {
             where: {
@@ -47,7 +48,7 @@ router.post('/actualizar', async(req, res) => {
     })
 })
 
-router.post('/listar', async(req, res) => {
+router.post('/listar', (req, res) => {
     return sequelize.transaction(t => {
         return Producto.findAll({transaction: t})
     }).then(result => {
@@ -60,11 +61,35 @@ router.post('/listar', async(req, res) => {
     })
 })
 
-router.get('/stock', (req, res) => {
-    return sequelize.transaction(t => {
-        return Inventario.findAll({include:[Producto], transaction: t})
+router.post('/buscar', (req, res) => {
+    return sequelize.transaction(t =>{ 
+        return Producto.findAll({
+            where:{
+                [Op.or]: {
+                    nombre: {
+                        [Op.like]: '%' + req.body.buscar + '%'
+                    },
+                    referencia: {
+                        [Op.like]: '%' + req.body.buscar + '%'
+                    },
+                    categoria: {
+                        [Op.like]: '%' + req.body.buscar + '%'
+                    },
+                    precioCompra: {
+                        [Op.like]: '%' + req.body.buscar + '%'
+                    },
+                    precioVenta: {
+                        [Op.like]: '%' + req.body.buscar + '%'
+                    }
+                }
+            }
+        })
     }).then(result => {
-        res.json(result)
+        res.json({
+            datos: result
+        })
+    }).catch(e => {
+        res.status(500).json(error(e))
     })
 })
 
