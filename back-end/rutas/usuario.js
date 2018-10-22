@@ -1,9 +1,12 @@
 import express from 'express'
 import { sequelize, Usuario } from '../database'
 import error from '../funciones/error'
+import Sequelize from 'sequelize'
 var router = express.Router()
 
 import admin from 'firebase-admin'
+
+const Op = Sequelize.Op
 
 router.post('/insertar', (req, res) => {
     let doc = {
@@ -110,6 +113,63 @@ router.post('/clientes', (req, res) => {
         })
     }).then(result => {
         res.json({ datos: result })
+    }).catch(e => {
+        res.status(500).json(error(e))
+    })
+})
+
+router.post('/eliminar', async (req, res) => {
+    admin.auth().deleteUser(req.body.uid)
+    .then(() => {
+        return sequelize.transaction(t => {
+            return Usuario.destroy({
+                where:{
+                    uid: req.body.uid
+                },
+                transaction: t
+            })
+        }).then(result => {
+            res.json({
+                datos: result
+            })
+        }).catch(e => {
+            res.status(500).json(error(e))
+        })
+    }).catch(e => {
+        res.status(500).json(error(e))
+    })
+})
+
+router.post('/buscar', (req, res) => {
+    return sequelize.transaction(t => {
+        return Usuario.findAll({
+            where: {
+                [Op.or]: {
+                    nombre: {
+                        [Op.like]: '%' + req.body.buscar + '%'
+                    },
+                    cedula:{
+                        [Op.like]: '%' + req.body.buscar + '%'
+                    },
+                    correo: {
+                        [Op.like]: '%' + req.body.buscar + '%'
+                    },
+                    celular:{
+                        [Op.like]: '%' + req.body.buscar + '%'
+                    },
+                    direccion: {
+                        [Op.like]: '%' + req.body.buscar + '%'
+                    }
+                },
+                rol: "Cliente"
+            },
+            transaction: t,
+            attributes: ['id', 'cedula', 'nombre']
+        })
+    }).then(result => {
+        res.json({
+            datos: result
+        })
     }).catch(e => {
         res.status(500).json(error(e))
     })

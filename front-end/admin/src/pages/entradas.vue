@@ -2,7 +2,10 @@
   <q-page padding>
     <p class="q-mx-md">Control de existencias de productos</p>
 
-    <q-table :data="objs" :columns="columnas" row-key="name">
+    <q-table :data="objs" :columns="columnas" row-key="name" :filter="search" :filter-method="myFilter">
+      <template slot="top-left" slot-scope="props">
+        <q-search hide-underline placeholder="Buscar" v-model="search" />
+      </template>
       <q-tr slot="body" slot-scope="props" :props="props">
         <q-td>
           {{props.row.producto.referencia}}
@@ -10,7 +13,7 @@
         <q-td :props="props" key="producto">
           {{props.row.producto.nombre}}
         </q-td>
-        <q-td>
+        <q-td :props="props" key="categoria">
           {{props.row.producto.categoria}}
         </q-td>
         <q-td :props="props" key="fecha">
@@ -71,6 +74,7 @@
 <script>
 import {filter} from 'quasar'
 import http from "src/funciones/http";
+import moment from "moment"
 export default {
   data() {
     return {
@@ -81,17 +85,19 @@ export default {
         productoId: 0,
         cantidad: 0
       },
+      search:"",
       buscar: "",
       objs: [],
       columnas: [
         {
           name: "referencia",
-          label: "referencia",
+          label: "Referencia",
+          field: row => row.producto.referencia,
           align: "left"
         },
         {
           name: "producto",
-          field: "producto",
+          field: row => row.producto.nombre,
           label: "Producto",
           sortable: true,
           align: "left"
@@ -99,11 +105,12 @@ export default {
         {
           name: "categoria",
           label: "Categoria",
-          align: "left"
+          align: "left",
+          field: row => row.producto.categoria,
         },
         {
           name: "fecha",
-          field: "fecha",
+          field: 'fecha',
           label: "Fecha",
           sortable: true,
           align: "left"
@@ -232,6 +239,27 @@ export default {
           }, e => {
             this.$q.notify(e)
           }, 'entrada/eliminar')
+      })
+    },
+    myFilter (rows, terms, cols, cellValue) {
+      const lowerTerms = terms ? terms.toLowerCase() : ''
+      return rows.filter(row => {
+        return cols.some(col => {
+          let temp 
+          switch(col.label){
+            case 'Referencia':
+              return (cellValue(col, row) + '').toLowerCase().indexOf(lowerTerms) !== -1
+            case 'Producto': 
+              return (cellValue(col, row) + '').toLowerCase().indexOf(lowerTerms) !== -1
+            case 'Categoria':
+              return (cellValue(col, row) + '').toLowerCase().indexOf(lowerTerms) !== -1
+            case 'Fecha':
+              let fecha = this.$moment.unix(row.fecha).format('MMMM DD [de] YYYY')
+              return fecha.toLowerCase().indexOf(lowerTerms) !== -1
+            case 'Cantidad':
+              return (cellValue(col, row) + '').toLowerCase().indexOf(lowerTerms) !== -1
+          }
+        })
       })
     }
   }

@@ -28,7 +28,7 @@
         <q-select class="q-mx-md" v-model="categoria" :options="categorias" />
       </div>
       <div class="col-xs-12 col-md-2 q-mt-md  ">
-        <q-checkbox class="q-mx-md" label="eliminado" v-model="deshabilitado"/>
+        <q-checkbox class="q-mx-md" label="Deshabilitado" v-model="deshabilitado"/>
       </div>
       <div class="col-xs-12 col-md-4 q-mt-md">
         <q-btn-group>
@@ -302,10 +302,10 @@ export default {
         this.cargandoT = true
         http({id: id, estado: true}, result => {
             this.reset()
-            this.cargar()
+            this.objs = this.objs.filter(element => element.id !== id)
           }, e => {
             this.$q.notify(e)
-          }, 'producto/actualizar')
+          }, 'producto/eliminar')
       }).catch(() => {
         this.cargandoT = false
       })

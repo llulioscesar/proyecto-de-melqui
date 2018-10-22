@@ -163,7 +163,7 @@ export default {
     ejecutar(){
       this.cedula = this.cedula.trim()
       this.nombre = this.nombre.trim()
-      this.celular = this.celular.trim()
+      this.celular = this.celular
       this.correo = this.correo.trim()
       this.direccion = this.direccion.trim()
       this.contraseña = this.contraseña.trim()
@@ -247,18 +247,19 @@ export default {
     eliminar(row){
       this.$q.dialog({
         title: 'Deshabilitar cliente',
-        message: '¿Desea deshabilitar el cliente?',
+        message: '¿Desea eliminar el cliente?',
         ok: 'Si',
         cancel: 'No'
       }).then(() => {
         http({id: row.id, uid: row.uid, deshabilitado: true,celular:'',contraseña:''},result => {
           this.reset()
           this.cargandoT = true
-          this.cargar()
+          this.objs = this.objs.filter(element => element.uid != row.uid)
+          this.cargandoT = false
         }, e => {
           this.cargando = false
           this.$q.notify(e)
-        }, 'usuario/editar')
+        }, 'usuario/eliminar')
       })
     },
     isEmail(correo) {

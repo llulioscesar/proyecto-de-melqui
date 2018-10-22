@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { setInterval } from 'timers';
+import http from 'src/funciones/http'
 export default {
   data() {
     return {
@@ -88,25 +88,22 @@ export default {
       return re.test(correo);
     },
     registroSocial(datos) {
-      this.$axios
-        .post("http://142.44.242.71/usuario/social", datos)
-        .then(result => {
-          if (result.data.error == false) {
-            let user = result.data.datos;
-            if(user.rol == 'admin'){
-              this.$q.localStorage.set("usuario", user);
-              this.$router.push("/app");
-            }else{
-              this.$q.notify('No eres admin')
-            }
-          } else {
-            this.$q.notify(result.data.mensaje);
+      http(datos, result => {
+        if (result.data.error == false) {
+          let user = result.data.datos;
+          if(user.rol == 'admin'){
+            this.$q.localStorage.set("usuario", user);
+            this.$router.push("/app");
+          }else{
+            this.$q.notify('No eres admin')
           }
-        })
-        .catch(e => {
-          console.log(e);
-          this.$q.notify("No se pudo establecer conexion");
-        });
+        } else {
+          this.$q.notify(result.data.mensaje);
+        }
+      }, e => {
+        this.loading = false
+        this.$q.notify("No se pudo establecer conexion");
+      }, 'usuario/social')
     }
   }
 };

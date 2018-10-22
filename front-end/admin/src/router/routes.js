@@ -15,7 +15,8 @@ const routes = [
       { path: 'entradas', component: () => import('pages/entradas.vue')},
       { path: 'salidas', component: () => import('pages/salidas.vue') },
       { path: 'productos', component: () => import('pages/productos.vue')},
-      { path: 'cuenta', component: () => import('pages/cuenta.vue')}
+      { path: 'cuenta', component: () => import('pages/cuenta.vue')},
+      { path: 'pedido', component: () => import('pages/pedido.vue')}
     ]
   }
 ]

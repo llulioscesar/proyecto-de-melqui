@@ -48,6 +48,22 @@ router.post('/actualizar', (req, res) => {
     })
 })
 
+router.post('/eliminar', (req, res) => {
+    return sequelize.transaction(t => {
+        return Producto.destroy({
+            where:{
+                id: req.body.id
+            }
+        })
+    }).then(result => {
+        res.json({
+            datos: result
+        })
+    }).catch(e => {
+        res.status(500).json(error(e))
+    })
+})
+
 router.post('/listar', (req, res) => {
     return sequelize.transaction(t => {
         return Producto.findAll({transaction: t})
@@ -82,7 +98,8 @@ router.post('/buscar', (req, res) => {
                         [Op.like]: '%' + req.body.buscar + '%'
                     }
                 }
-            }
+            },
+            transaction: t
         })
     }).then(result => {
         res.json({
