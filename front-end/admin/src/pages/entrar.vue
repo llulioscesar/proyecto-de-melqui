@@ -89,8 +89,8 @@ export default {
     },
     registroSocial(datos) {
       http(datos, result => {
-        if (result.data.error == false) {
-          let user = result.data.datos;
+        if (result.error == false) {
+          let user = result.datos;
           if(user.rol == 'admin'){
             this.$q.localStorage.set("usuario", user);
             this.$router.push("/app");
@@ -98,11 +98,11 @@ export default {
             this.$q.notify('No eres admin')
           }
         } else {
-          this.$q.notify(result.data.mensaje);
+          this.$q.notify(result.mensaje);
         }
       }, e => {
         this.loading = false
-        this.$q.notify("No se pudo establecer conexion");
+        this.$q.notify(e);
       }, 'usuario/social')
     }
   }

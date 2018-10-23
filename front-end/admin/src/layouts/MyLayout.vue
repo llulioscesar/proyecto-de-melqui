@@ -34,9 +34,6 @@
           <q-item to="/app/entradas" exact>
             <q-item-main label="Entradas"/>
           </q-item>
-          <q-item to="/app/salidas" exact>
-            <q-item-main label="Salidas"/>
-          </q-item>
           <q-item to="/app/inventario" exact>
             <q-item-main label="Existencias"/>
           </q-item>

@@ -19,4 +19,19 @@ router.post('/', (req, res) => {
     })
 })
 
+router.post('/existencias', (req, res) => {
+    return sequelize.transaction(t => {
+        return Inventario.findAll({
+            attributes: ['productoId', 'stock'],
+            transaction: t
+        })
+    }).then(result => {
+        res.json({
+            datos: result
+        })
+    }).catch(e => {
+        res.status(500).json(error(e))
+    })
+})
+
 export default router

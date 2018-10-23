@@ -90,15 +90,11 @@ router.post('/buscar', (req, res) => {
                     },
                     categoria: {
                         [Op.like]: '%' + req.body.buscar + '%'
-                    },
-                    precioCompra: {
-                        [Op.like]: '%' + req.body.buscar + '%'
-                    },
-                    precioVenta: {
-                        [Op.like]: '%' + req.body.buscar + '%'
                     }
-                }
+                },
+                estado: false
             },
+            attributes: ['id', 'referencia', 'nombre', 'categoria', 'descripcion', 'precioVenta'],
             transaction: t
         })
     }).then(result => {

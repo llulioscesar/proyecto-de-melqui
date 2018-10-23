@@ -2,7 +2,6 @@ import sequelize from './sequelize'
 import Producto from './producto'
 import Usuario from './usuario'
 import Entrada from './entrada'
-import Salida from './salida'
 import Inventario from './inventario'
 import Pedido from './pedido'
 import DetallePedido from './detallePedido'
@@ -15,10 +14,6 @@ Inventario.belongsTo(Producto, { foreignKey: 'productoId' })
 // Relacion Producto => Entradas
 Producto.hasMany(Entrada, { foreignKey: 'productoId', onDelete: 'cascade' })
 Entrada.belongsTo(Producto, { foreignKey: 'productoId' })
-
-// Relacion Producto => Salidas
-Producto.hasMany(Salida, { foreignKey: 'productoId', onDelete: 'cascade' })
-Salida.belongsTo(Producto, { foreignKey: 'productoId' })
 
 // Relacion Producto => DetallePedido
 Producto.hasMany(DetallePedido, {foreignKey: 'productoId', onDelete: 'cascade'})
@@ -37,7 +32,6 @@ export {
     Producto,
     Usuario,
     Entrada,
-    Salida,
     Inventario,
     Pedido,
     DetallePedido
