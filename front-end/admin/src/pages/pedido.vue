@@ -16,7 +16,7 @@
       <div class="col-xs-12 col-md-3">
         <div class="q-ma-md">
           <strong>Cedula:</strong> <br>
-          <span v-if="cliente!=null">{{cliente.sublabel}}</span>
+          <span v-if="cliente!=null">{{cliente.cedula}}</span>
           <span v-else>########</span>
         </div>
       </div>
@@ -24,7 +24,7 @@
     <div class="row q-mt-md">
       <q-btn-group>
         <q-btn :disabled="cliente==null || id!=0" color="primary" label="Guardar" @click="guardarPedido"/>
-        <q-btn :disabled="id==0" color="primary" label="Eliminar" @click="eliminarPedido"/>
+        <!--<q-btn :disabled="id==0" color="primary" label="Eliminar" @click="eliminarPedido"/>-->
         <q-btn :disabled="total ==0" color="primary" label="Cerrar" @click="cerrar"/>
         <q-btn :disabled="total ==0" color="primary" label="Imprimir" @click="imprimir"/>
       </q-btn-group>
@@ -50,6 +50,9 @@
         </q-td>
         <q-td :props="props" key="total">
           ${{(parseFloat(props.row.total)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}}
+        </q-td>
+        <q-td auto-width>
+          <q-btn round class="no-border" outline color="red" icon="delete" @click="eliminarItem(props.row)"></q-btn>
         </q-td>
       </q-tr>
     </q-table>
@@ -137,6 +140,10 @@ export default {
           label: 'Total',
           field: 'total',
           align: 'right'
+        },
+        {
+          name: 'acciones',
+          label: 'Acciones'
         }
       ]
     }
@@ -153,7 +160,8 @@ export default {
       this.total = pedido.total
       this.cliente = pedido.cliente
       this.detalle = pedido.detalle
-      this.buscarC = this.cliente.label
+      
+      this.buscarC = this.cliente.nombre
     } else{
       this.fecha = this.$moment().startOf('day').unix()
     }
@@ -182,7 +190,9 @@ export default {
       }, 'usuario/buscar')
     },
     selectedCliente(cliente){
+      console.log(cliente)
       this.cliente = {
+        id: cliente.value,
         nombre: cliente.label,
         cedula: cliente.sublabel
       }
@@ -194,7 +204,7 @@ export default {
     guardarPedido(){
       if(this.cliente != null){
         let doc = {
-          usuarioId: this.cliente.value,
+          usuarioId: this.cliente.id,
           fecha: this.fecha,
           total: 0,
           pendiente: true
@@ -336,7 +346,7 @@ export default {
         let tem = JSON.parse(JSON.stringify(result.datos))
         tem.producto = JSON.parse(JSON.stringify(this.item))
         this.detalle.push(tem)
-        this.total = this.total + tem.total
+        this.total = parseFloat(this.total) + parseFloat(tem.total)
         this.guardarTemp()
         this.cerrarDialogo()
         this.actualizarPedido()
@@ -355,9 +365,9 @@ export default {
       if(row.cantidad > stock || row.cantidad < 0){
         row.cantidad = stock
       }
-      this.total = this.total - row.total
-      row.total = row.precio * row.cantidad
-      this.total = this.total + row.total
+      this.total = parseFloat(this.total) - parseFloat(row.total)
+      row.total = parseFloat(row.precio) * parseFloat(row.cantidad)
+      this.total = parseFloat(this.total) + parseFloat(row.total)
       let tem = JSON.parse(JSON.stringify(row))
       tem.oldCantidad = oldValor
       http(tem, result => {
@@ -382,10 +392,26 @@ export default {
       }
     },
     imprimir(){
-      this.$router.push('/app/recibo')
+      window.open('/app/recibo', '_blank');
     },
     cerrar(){
       this.$router.push('/app/pedidos')
+    },
+    eliminarItem(row){
+      let doc = {
+        id: row.id,
+        productoId: row.productoId,
+        cantidad: row.cantidad
+      }
+      http(doc, result => {
+        this.total = parseFloat(this.total) - parseFloat(row.total)
+        this.actualizarPedido()
+        this.cargarExistencias()
+        this.detalle = this.detalle.filter(element => element.id != row.id)
+        this.guardarTemp()
+      }, e => {
+        this.$q.notify(e)
+      }, 'detalle/eliminar')
     }
   }
 }

@@ -25,6 +25,9 @@
         </q-item>
         <q-item to="/app/pedidos" exact>
           <q-item-main label="Pedidos"/>
+          <q-item-side right>
+            <q-chip square color="primary" class="shadow-2">{{pendientes}}</q-chip>
+          </q-item-side>
         </q-item>
         <q-item to="/app/clientes" exact>
           <q-item-main label="Clientes"/>
@@ -57,13 +60,31 @@
 
 <script>
 import { openURL } from "quasar";
-
+import http from 'src/funciones/http';
 export default {
   name: "MyLayout",
+  watch:{
+    $route (to, from){
+        this.cargar()
+    }
+  }, 
   data() {
     return {
-      leftDrawerOpen: this.$q.platform.is.desktop
+      leftDrawerOpen: this.$q.platform.is.desktop,
+      pendientes: 0,
     };
+  },
+  mounted(){
+    this.cargar()
+  },
+  methods:{
+    cargar(){
+      http(null, result => {
+        this.pendientes = result.datos
+      }, e => {
+
+      }, 'pedido/pendientes')
+    }
   }
 };
 </script>

@@ -12,14 +12,14 @@
     <div class="row items-center justify-center">
       <table style="border-spacing: 5px;border-collapse: separate;">
       <tr>
-          <th style="border-bottom:1pt dashed black;">Ref</th>
           <th style="border-bottom:1pt dashed black;" align="left">Descripcion</th>
+          <th style="border-bottom:1pt dashed black;" align="right">Vlr Unt.</th>
           <th style="border-bottom:1pt dashed black" align="center">Cnt</th>
           <th style="border-bottom:1pt dashed black;" align="right">Valor</th>
       </tr>
       <tr v-for="(item, i) in detalle" :key="i">
-        <td >{{(parseInt(item.producto.referencia)).pad(4)}}</td>
         <td align="left">{{(item.producto.nombre + ' ' + item.producto.descripcion)}}</td>
+        <td align="right">{{(parseFloat(item.precio)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}}</td>
         <td align="center">{{item.cantidad}}</td>
         <td align="right">{{(parseFloat(item.total)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}}</td>
       </tr>

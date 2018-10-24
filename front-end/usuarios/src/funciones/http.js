@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 export default function http(ruta, datos, callback, callbackError) {
+
     let settings = {
         responseType: 'json',
         responseEncoding: 'utf8',
@@ -22,4 +23,5 @@ export default function http(ruta, datos, callback, callbackError) {
             }
             callbackError(error)
         })
+
 }

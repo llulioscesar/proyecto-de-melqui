@@ -1,5 +1,5 @@
 import express from 'express'
-import {sequelize, Pedido, Usuario} from '../database'
+import {sequelize, Pedido, DetellePedido, Usuario} from '../database'
 import error from '../funciones/error'
 import Sequelize from 'sequelize'
 
@@ -62,23 +62,83 @@ router.post('/actualizar', (req, res) => {
 
 router.post('/listar', (req, res) => {
 
-    let query = {
-        fecha: {
-            [Op.between]: [req.body.fecha1, req.body.fecha2]
-        }
+    let f1 = req.body.fecha1
+    let f2 = req.body.fecha2
+
+    if(f2 > f1){
+        f1 = req.body.fecha1
+        f2 = req.body.fecha2
+    } else if(f1 > f2){
+        f1 = req.body.fecha2
+        f2 = req.body.fecha1
     }
 
-    if(req.body.pendiente != undefined){
-        query.pendiente = req.body.pendiente
+    let query = {
+        fecha: {
+            [Op.between]: [f1, f2]
+        },
+        pendiente: req.body.pendiente
+    }
+
+    if(req.body.pendiente == null){
+        query.pendiente = {
+            [Op.or]: [0,1]
+        }
     }
 
     return sequelize.transaction(t => {
         return Pedido.findAll({
             where: query,
-            include: [Usuario],
+            order: [['fecha', 'DESC']],
+            include: [
+                {
+                    model: Usuario,
+                    attributes:['cedula', 'nombre']
+                }
+            ],
             transaction: t
         })
-    }).return
+    }).then(result => {
+        res.json({
+            datos: result
+        })
+    }).catch(e => {
+        res.status(500).json(error(e))
+    })
+})
+
+router.post('/pendientes', (req, res) => {
+    return sequelize.transaction(t => {
+        return Pedido.count({
+            where: {
+                pendiente: true
+            },
+            transaction: t
+        })
+    }).then(result => {
+        res.json({
+            datos: result
+        })
+    }).catch(e => {
+        res.status(500).json(error(e))
+    })
+})
+
+router.post('/actualizar', (req, res) => {
+    return sequelize.transaction(t => {
+        return Pedido.update(req.body,{
+            where: {
+                id: req.body.id
+            },
+            transaction: t
+        })
+    }).then(result => {
+        res.json({
+            datos: result
+        })
+    }).catch(e => {
+        res.status(500).json(error(e))
+    })
 })
 
 export default router

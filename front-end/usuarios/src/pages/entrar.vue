@@ -37,6 +37,7 @@
 <script>
 import firebase from "firebase/app";
 import "firebase/auth";
+import http from 'src/funciones/http'
 export default {
   data() {
     return {
@@ -61,13 +62,15 @@ export default {
         .signInWithEmailAndPassword(this.correo, this.clave)
         .then(result => {
           let user = result.user;
+          console.log(user)
           let datos = {
             nombre: user.displayName,
             correo: user.email,
             celular: user.phoneNumber,
             fotoURL: user.photoURL,
             uid: user.uid,
-            rol: "cliente"
+            rol: "cliente",
+            correoVerificado: user.emailVerified
           };
           el.registroSocial(datos);
         })
@@ -75,7 +78,11 @@ export default {
           el.loading = false;
           var errorCode = error.code;
           let msj = "";
+          console.log(errorCode)
           switch (errorCode) {
+            case 'auth/user-disabled':
+              msj = "La cuenta de usuario ha sido desactivada por un administrador."
+              break
             case "auth/user-not-found":
               msj =
                 "No existe ningún registro de usuario que corresponda al identificador proporcionado.";
@@ -128,7 +135,8 @@ export default {
                   celular: user.phoneNumber,
                   fotoURL: user.photoURL,
                   uid: user.uid,
-                  rol: "cliente"
+                  rol: "cliente",
+                  correoVerificado: user.emailVerified
                 };
                 el.registroSocial(datos);
               })
@@ -153,7 +161,8 @@ export default {
               celular: user.phoneNumber,
               fotoURL: user.photoURL,
               uid: user.uid,
-              rol: "cliente"
+              rol: "cliente",
+              correoVerificado: user.emailVerified
             };
             el.registroSocial(datos);
           })
@@ -167,29 +176,28 @@ export default {
       }
     },
     registroSocial(datos) {
-      this.$axios
-        .post("http://142.44.242.71/usuario/social", datos)
-        .then(result => {
-          if (result.data.error == false) {
-            let user = result.data.datos;
-            if(user.rol == 'cliente'){
+      http('usuario/social', datos, result => {
+        if (result.error == false) {
+            let user = result.datos;
+            if(user.rol == 'cliente' && user.deshabilitado == false){
+              user.correoVerificado = datos.correoVerificado
               this.$q.localStorage.set("usuario", user);
               this.$router.push("/app");
-            }else{
+            }else if(user.rol != 'cliente'){
               this.$q.notify('No eres cliente')
+            }else{
+              this.$q.notify('Cuenta inhabilitada')
             }
             
           } else {
-            this.$q.notify(result.data.mensaje);
+            this.$q.notify(result.mensaje);
           }
-        })
-        .catch(e => {
-          console.log(e);
-          this.$q.notify("No se pudo establecer conexion");
-        });
+      }, e => {
+        this.$q.notify("No se pudo establecer conexion");
+      })
     }
   }
-};
+}
 </script>
 
 <style>
