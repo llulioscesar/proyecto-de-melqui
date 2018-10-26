@@ -20,7 +20,11 @@
     <q-table class="q-mt-xl" :data="pedidos" :columns="columnas" row-key="name">
           <q-tr slot="body" slot-scope="props" :props="props">
             <q-td :props="props" key="cliente">
+              <q-icon :color="props.row.listarPendiente ? 'primary' : 'black'" :name="props.row.listarPendiente ? 'smartphone' : 'person'" size="18px"></q-icon>
               {{props.row.usuario.nombre}}
+            </q-td>
+            <q-td :props="props" key="direccion">
+              {{props.row.direccion}}
             </q-td>
             <q-td :props="props" key="fecha">
               {{$moment.unix(props.row.fecha).format('MMMM DD [de] YYYY')}}
@@ -60,6 +64,12 @@ export default {
           label: 'Cliente',
           align: 'left',
           sortable: true
+        },
+        {
+          name: 'direccion',
+          field: 'direccion',
+          align: 'left',
+          label: 'Direccion'
         },
         {
           name: 'fecha',

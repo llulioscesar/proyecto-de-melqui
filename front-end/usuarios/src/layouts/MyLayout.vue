@@ -24,17 +24,30 @@
     name: "MyLayout",
     data() {
       return {
-        url: null
+        url: null,
       };
     },
     beforeMount() {
       this.$nextTick(() => {
         let usuario = this.$q.localStorage.get.item("usuario");
         if (!usuario) {
-          this.$router.push("/");
+          this.salir()
         }
       });
     },
+    methods:{
+      salir(){
+        let el = this
+        this.$auth.signOut().then(function() {
+          el.$q.localStorage.clear()
+          el.$router.push('/')
+        }).catch(function(error) {
+          el.$q.notify(error)
+          el.$q.localStorage.clear()
+          el.$router.push('/')
+        });
+      }
+    }
   };
 </script>
 

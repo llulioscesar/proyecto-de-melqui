@@ -23,7 +23,7 @@
             <br>
             <q-input v-model="clave2" type="password" placeholder="Repita la contraseña" clearable />
             <br>
-            <vue-recaptcha ref="recaptcha" @verify="onVerify" @expired="onExpired" :sitekey="'6LcXo3EUAAAAAKcmGj4Vf1ftxoremGwlHS4xWkY_'"></vue-recaptcha>
+            <vue-recaptcha v-if="!$q.platform.is.cordova" ref="recaptcha" @verify="onVerify" @expired="onExpired" :sitekey="'6LcXo3EUAAAAAKcmGj4Vf1ftxoremGwlHS4xWkY_'"></vue-recaptcha>
             </form>
           </q-card-main>
           <q-card-actions class="q-px-md q-pb-md q-pt-md row justify-center">
@@ -66,6 +66,9 @@ export default {
   },
   methods: {
     validar() {
+      if(this.$q.platform.is.cordova){
+        this.captcha = 'cordova'
+      }
       let ok = false;
       if (this.nombre == "") {
         this.$q.notify("Ingresa tu nombre");

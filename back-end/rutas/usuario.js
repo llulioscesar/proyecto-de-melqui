@@ -52,7 +52,7 @@ router.post('/editar', async (req, res) => {
         password: req.body.contraseña
     }
     if (req.body.celular == '') {
-        delete doc.phoneNumber
+        doc.phoneNumber = null
     }
     if (req.body.contraseña == '') {
         delete doc.password

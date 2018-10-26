@@ -13,7 +13,7 @@
             <br>
             <q-input v-model="clave" type="password" placeholder="Contraseña" clearable />
             <br>
-            <q-btn class="no-shadow" label="Recuperar contraseña" style="padding:0"/>
+            <q-btn class="no-shadow" label="Recuperar contraseña" style="padding:0" @click.native="restablecer=true"/>
           </q-card-main>
           <q-card-actions class="q-px-md q-pb-md q-pt-md row justify-center">
             <q-btn-group class="no-shadow ">
@@ -29,6 +29,19 @@
               <q-btn label="Google" style="background:#dd4b39;color:white" @click.native="google"/>
             </q-btn-group>
         </div>
+
+        <q-modal v-model="restablecer" minimized>
+          <div class="q-pa-md">
+            <p><strong>Recuperar contraseña</strong></p>
+            <q-field label="Direccion de correo">
+              <q-input type="email" v-model="correo"></q-input>
+            </q-field>
+            <div class="row justify-center q-mt-md">
+              <q-btn color="primary" label="Enviar correo" :disable="!isEmail(correo)" @click="sendResed"></q-btn>
+            </div>
+          </div>
+        </q-modal>
+
       </q-page>
     </q-page-container>
   </q-layout>
@@ -43,7 +56,8 @@ export default {
     return {
       correo: "",
       clave: "",
-      loading: false
+      loading: false,
+      restablecer: false
     };
   },
   beforeMount() {
@@ -167,6 +181,7 @@ export default {
             el.registroSocial(datos);
           })
           .catch(error => {
+            el.loading = false
             var errorCode = error.code;
             var errorMessage = error.message;
             var email = error.email;
@@ -181,6 +196,7 @@ export default {
             let user = result.datos;
             if(user.rol == 'cliente' && user.deshabilitado == false){
               user.correoVerificado = datos.correoVerificado
+              user.contraseña = this.clave
               this.$q.localStorage.set("usuario", user);
               this.$router.push("/app");
             }else if(user.rol != 'cliente'){
@@ -195,6 +211,20 @@ export default {
       }, e => {
         this.$q.notify("No se pudo establecer conexion");
       })
+    },
+    sendResed(){
+      let el = this
+
+      this.$auth.sendPasswordResetEmail(el.correo).then(function() {
+        el.$q.notify({
+          message: 'Se a enviado correo electrónico de restablecimiento de la contraseña ',
+          color: 'primary'
+        })
+        el.correo = ''
+        el.restablecer = false
+      }).catch(function(error) {
+        el.$q.notify(error.message)
+      });
     }
   }
 }

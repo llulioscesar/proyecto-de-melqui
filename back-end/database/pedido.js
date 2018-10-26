@@ -15,6 +15,25 @@ const pedido = sequelize.define('pedido', {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: true
+    },
+    cancelado:{
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
+    },
+    venta:{
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
+    },
+    listarPendiente:{
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
+    },
+    direccion: {
+        type: Sequelize.STRING(255),
+        allowNull: false
     }
 },{
     timestamps: false,

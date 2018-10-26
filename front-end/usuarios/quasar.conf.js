@@ -6,7 +6,9 @@ module.exports = function (ctx) {
     plugins: [
       'i18n',
       'axios',
-      'firebase'
+      'firebase',
+      'moment',
+      'mqtt'
     ],
     css: [
       'app.styl'
@@ -22,7 +24,7 @@ module.exports = function (ctx) {
     build: {
       scopeHoisting: true,
       vueRouterMode: 'history',
-      publicPath: '/u/',
+      //publicPath: '/u/',
       // vueCompiler: true,
       // gzip: true,
       // analyze: true,

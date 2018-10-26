@@ -15,6 +15,10 @@ const routes = [
   {
     path: '/registro',
     component: () => import('pages/registro.vue')
+  },
+  {
+    path: '/pedido',
+    component: () => import('pages/pedido.vue')
   }
 ]
 

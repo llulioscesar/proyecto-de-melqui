@@ -111,7 +111,7 @@ router.post('/pendientes', (req, res) => {
     return sequelize.transaction(t => {
         return Pedido.count({
             where: {
-                pendiente: true
+                listarPendiente: true
             },
             transaction: t
         })
@@ -130,6 +130,24 @@ router.post('/actualizar', (req, res) => {
             where: {
                 id: req.body.id
             },
+            transaction: t
+        })
+    }).then(result => {
+        res.json({
+            datos: result
+        })
+    }).catch(e => {
+        res.status(500).json(error(e))
+    })
+})
+
+router.post('/cliente', (req, res) => {
+    return sequelize.transaction(t => {
+        return Pedido.findAll({
+            where: {
+                usuarioId: req.body.id
+            },
+            order: [['fecha', 'desc']],
             transaction: t
         })
     }).then(result => {
