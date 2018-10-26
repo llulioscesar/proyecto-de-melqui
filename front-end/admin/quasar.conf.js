@@ -7,7 +7,8 @@ module.exports = function (ctx) {
       'i18n',
       'axios',
       'firebase',
-      'moment'
+      'moment',
+      'mqtt'
     ],
     css: [
       'app.styl'

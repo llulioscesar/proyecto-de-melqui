@@ -55,6 +55,11 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <audio id="audio" controls style="display:none">
+      <source type="audio/mp3" src="statics/noti.mp3">
+    </audio>
+
   </q-layout>
 </template>
 
@@ -74,7 +79,33 @@ export default {
       pendientes: 0,
     };
   },
+  mqtt:{
+    'app/pedido/cancelado' (data){
+      this.pendientes = this.pendientes - 1
+      this.$q.notify({
+        message: 'Se ha cancelado un pedido',
+        color: 'yellow-9'
+      })
+      var audio = document.getElementById("audio");
+      audio.play();
+    },
+    'app/pedido/nuevo' (data){
+      this.pendientes = this.pendientes + 1
+      this.$q.notify({
+        message: 'Un nuevo pedido',
+        color: 'primary'
+      })
+      var audio = document.getElementById("audio");
+      audio.play();
+    }
+  },
+  beforeDestroy(){
+    this.$mqtt.unsubscribe('app/pedido/cancelado')
+    this.$mqtt.unsubscribe('app/pedido/nuevo')
+  },
   mounted(){
+    this.$mqtt.subscribe('app/pedido/cancelado', {qos:1})
+    this.$mqtt.subscribe('app/pedido/nuevo', {qos:1})
     this.cargar()
   },
   methods:{

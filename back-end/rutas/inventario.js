@@ -85,4 +85,35 @@ router.post('/buscar', (req, res) => {
     })
 })
 
+router.post('/actualizar', (req, res) => {
+    return sequelize.transaction(t =>{
+        return Inventario.findOne({
+            where:{
+                productoId: req.body.productoId
+            },
+            transaction:t
+        }).then(result1 => {
+            let salidas = result1.salidas - req.body.cantidad
+            let stock = result1.entradas - salidas
+            return Inventario.update({
+                salidas: salidas,
+                stock: stock
+            },{
+                where: {
+                    id: result1.id
+                },
+                transaction: t
+            }).then(result2 => {
+                return result2
+            })
+        })
+    }).then(result => {
+        res.json({
+            datos: result
+        })
+    }).catch(e => {
+        res.status(500).json(error(e))
+    })
+})
+
 export default router

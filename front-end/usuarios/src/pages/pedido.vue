@@ -154,7 +154,7 @@ export default {
       this.$mqtt.publish('app/pedido', JSON.stringify(doc))
     },
     sendAlert(){
-      this.$mqtt.publish('app/nuevo/pedido', 'cargar')
+      this.$mqtt.publish('app/pedido/nuevo', 'cargar')
     },
     cargarProductos(){
       http('inventario/listacliente', null, result => {
@@ -227,7 +227,9 @@ export default {
       let doc = {
         id: this.id,
         total: this.total,
-        direccion: this.direccion
+        direccion: this.direccion,
+        cancelado: false,
+        listarPendiente: false
       }
       http('pedido/actualizar', doc, result => {
         this.guardarTem()
@@ -302,7 +304,9 @@ export default {
           let doc = {
             id: this.id,
             total: this.total,
-            listarPendiente: true
+            pendiente: true,
+            listarPendiente: true,
+            cancelado: false
           }
           http('pedido/actualizar', doc, result => {
             this.sendAlert()

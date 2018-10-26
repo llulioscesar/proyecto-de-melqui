@@ -77,6 +77,7 @@ router.post('/listar', (req, res) => {
         fecha: {
             [Op.between]: [f1, f2]
         },
+        cancelado: false,
         pendiente: req.body.pendiente
     }
 
@@ -84,6 +85,7 @@ router.post('/listar', (req, res) => {
         query.pendiente = {
             [Op.or]: [0,1]
         }
+        delete query.cancelado
     }
 
     return sequelize.transaction(t => {
@@ -93,7 +95,7 @@ router.post('/listar', (req, res) => {
             include: [
                 {
                     model: Usuario,
-                    attributes:['cedula', 'nombre']
+                    attributes:['id','cedula', 'nombre','direccion']
                 }
             ],
             transaction: t
@@ -111,6 +113,7 @@ router.post('/pendientes', (req, res) => {
     return sequelize.transaction(t => {
         return Pedido.count({
             where: {
+                cancelado: false,
                 listarPendiente: true
             },
             transaction: t

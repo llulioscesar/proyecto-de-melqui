@@ -18,7 +18,10 @@
       </div> 
     </div>
     <q-table class="q-mt-xl" :data="pedidos" :columns="columnas" row-key="name">
-          <q-tr slot="body" slot-scope="props" :props="props">
+          <q-tr slot="body" slot-scope="props" :props="props" :class="props.row.cancelado ? 'bg-red-1' : (props.row.listarPendiente? 'bg-white' : 'bg-yellow-1')">
+            <q-td :props="props" key="id">
+              {{props.row.id}}
+            </q-td>
             <q-td :props="props" key="cliente">
               <q-icon :color="props.row.listarPendiente ? 'primary' : 'black'" :name="props.row.listarPendiente ? 'smartphone' : 'person'" size="18px"></q-icon>
               {{props.row.usuario.nombre}}
@@ -34,7 +37,7 @@
             </q-td>
             <q-td :props="props" key="acciones" auto-width>
               <q-btn round outline color="secondary" class="no-border" icon="visibility" @click="verPedido(props.row)"/>
-              <q-btn round outline color="secondary" class="no-border" :icon="props.row.pendiente ? 'check_circle_outline' : 'check_circle'" @click="cambiarEstado(props.row)"/>
+              <q-btn v-if="!props.row.cancelado" round outline color="secondary" class="no-border" :icon="props.row.pendiente ? 'check_circle_outline' : 'check_circle'" @click="cambiarEstado(props.row)"/>
               <q-btn round outline color="red" class="no-border" icon="delete" @click="eliminarPedido(props.row)"></q-btn>
             </q-td>
           </q-tr>
@@ -58,6 +61,12 @@ export default {
       f2:0,
       pedidos:[],
       columnas:[
+        {
+          name: 'id',
+          field: 'id',
+          label: 'Id',
+          align: 'center'
+        },
         {
           name:'cliente',
           field: row => row.usuario.nombre,
@@ -93,7 +102,13 @@ export default {
       ]
     }
   },
+  beforeDestroy(){
+    this.$mqtt.unsubscribe('app/pedido/cancelado')
+    this.$mqtt.unsubscribe('app/pedido/nuevo')
+  },
   mounted(){
+    this.$mqtt.subscribe('app/pedido/cancelado', {qos:1})
+    this.$mqtt.subscribe('app/pedido/nuevo', {qos:1})
     let f1 = this.$moment().startOf('day')
     let f2 = this.$moment(f1).subtract(7, 'days')
     this.f2 = f1.toDate()
@@ -102,7 +117,43 @@ export default {
     this.fecha2 = f1.unix()
     this.cargarFiltro()
   },
+  mqtt:{
+    'app/pedido/cancelado'(data){
+      let doc = {
+        fecha1: this.fecha1,
+        fecha2:this.fecha2,
+        pendiente: this.filtrar == '0' ? true : this.filtrar == '1' ? false : null
+      }
+
+      http(doc, result => {
+        this.pedidos = JSON.parse(JSON.stringify(result.datos))
+      }, e => {
+        this.$q.notify(e)
+      }, 'pedido/listar')
+    },
+    'app/pedido/nuevo'(data){
+      let doc = {
+        fecha1: this.fecha1,
+        fecha2:this.fecha2,
+        pendiente: this.filtrar == '0' ? true : this.filtrar == '1' ? false : null
+      }
+
+      http(doc, result => {
+        this.pedidos = JSON.parse(JSON.stringify(result.datos))
+      }, e => {
+        this.$q.notify(e)
+      }, 'pedido/listar')
+    },
+  },
   methods:{
+    realTime(id, producto, cantidad){
+      let doc = {
+        id: id,
+        productoId: producto,
+        cantidad
+      }
+      this.$mqtt.publish('app/pedido', JSON.stringify(doc))
+    },
     cargarFiltro(){
 
       let doc = {
@@ -129,6 +180,7 @@ export default {
           pendiente: !row.pendiente
         }
         http(doc, result => {
+          this.$mqtt.publish('app/pedido/' + row.usuarioId, 'cargar')
           this.cargarFiltro()
         }, e => {
           this.$q.notify(e)
@@ -155,28 +207,32 @@ export default {
         cancel: 'No'
       }).then(() => {
         http({pedido: row.id}, result => {
-          let docs = JSON.parse(JSON.stringify(result.datos))
-          docs.forEach(item => {
-            this.eliminarItem(item)
-          })
-          this.eliminarP(row.id)
+          if(row.pendiente == true && row.cancelado == false){
+            let docs = JSON.parse(JSON.stringify(result.datos))
+            docs.forEach(item => {
+              this.eliminarItem(row.id, item)
+            })
+          }
+          this.eliminarP(row.id, row.usuarioId)
         }, e => {
           this.$q.notify(e)
         }, 'detalle/pedido')
       })
     },
-    eliminarItem(row){
+    eliminarItem(id,row){
       let doc = {
         id: row.id,
         productoId: row.productoId,
         cantidad: row.cantidad
       }
       http(doc, result => {
+        this.realTime(id, row.productoId, row.cantidad)
       }, e => {
       }, 'detalle/eliminar')
     },
-    eliminarP(id){
+    eliminarP(id, user){
       http({id: id}, result => {
+        this.$mqtt.publish('app/pedido/' + user, 'cargar')
         this.pedidos = this.pedidos.filter(element => element.id != id)
       }, e => {
         this.$q.notify(e)

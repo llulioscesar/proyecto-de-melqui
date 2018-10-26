@@ -20,6 +20,11 @@
           <span v-else>########</span>
         </div>
       </div>
+      <div class="col-xs-12 col-md-3">
+        <div class="q-ma-md">
+          <q-input float-label="direccion" v-model="direccion"></q-input>
+        </div>
+      </div>
     </div>
     <div class="row q-mt-md">
       <q-btn-group>
@@ -101,6 +106,7 @@ export default {
       id: 0,
       fecha: 0,
       total: 0,
+      direccion: '',
       detalle: [],
       item: null,
       buscarP:'',
@@ -148,10 +154,27 @@ export default {
       ]
     }
   },
+  mqtt:{
+    'app/pedido' (data, tema) {
+      let msj = String.fromCharCode.apply(null, data)
+      let inv = JSON.parse(msj)
+      console.log(inv)
+      if(inv.id != this.id){
+        this.existencias.forEach(item => {
+          if(item.productoId == inv.productoId){
+            item.stock = parseFloat(item.stock) + parseFloat(inv.cantidad)
+            return
+          }
+        })
+      }
+    }
+  },
   beforeDestroy(){
     LocalStorage.remove('pedido')
+    this.$mqtt.unsubscribe('app/pedido')
   },
   mounted(){
+    this.$mqtt.subscribe('app/pedido', {qos: 1})
     let pedido = LocalStorage.get.item('pedido')
     if(pedido != null){
       pedido = JSON.parse(JSON.stringify(pedido))
@@ -160,7 +183,7 @@ export default {
       this.total = pedido.total
       this.cliente = pedido.cliente
       this.detalle = pedido.detalle
-      
+      this.direccion = pedido.direccion
       this.buscarC = this.cliente.nombre
     } else{
       this.fecha = this.$moment().startOf('day').unix()
@@ -168,6 +191,15 @@ export default {
     this.cargarExistencias()
   },
   methods:{
+    realTime(id, cantidad){
+      let doc = {
+        id: this.id,
+        productoId: id,
+        cantidad: cantidad
+      }
+      console.log(doc)
+      this.$mqtt.publish('app/pedido', JSON.stringify(doc))
+    },
     cargarExistencias(){
       http(null, result => {
         this.existencias = JSON.parse(JSON.stringify(result.datos))
@@ -181,7 +213,8 @@ export default {
           return {
             label: cliente.nombre,
             sublabel: cliente.cedula,
-            value: cliente.id
+            value: cliente.id,
+            direccion: cliente.direccion
           }
         })
         done(lista)
@@ -194,8 +227,10 @@ export default {
       this.cliente = {
         id: cliente.value,
         nombre: cliente.label,
-        cedula: cliente.sublabel
+        cedula: cliente.sublabel,
+        direccion: cliente.direccion
       }
+      this.direccion = cliente.direccion
       this.buscarC = cliente.label
       if(this.id != 0){
         this.actualizarPedido()
@@ -207,10 +242,12 @@ export default {
           usuarioId: this.cliente.id,
           fecha: this.fecha,
           total: 0,
-          pendiente: true
+          pendiente: true,
+          direccion: this.direccion
         }
         http(doc, result => {
           console.log(result)
+          this.$mqtt.publish('app/pedido/' + this.cliente.id, 'cargar')
           this.id = result.datos.id
           LocalStorage.set('pedido',{
             id: this.id,
@@ -333,6 +370,7 @@ export default {
       this.cargarExistencias()
     },
     agregarDetalle(){
+      this.cantidad = parseInt(this.cantidad)
       let doc = {
         pedidoId: this.id,
         productoId: this.item.id,
@@ -342,7 +380,7 @@ export default {
         fecha: this.fecha
       }
       http(doc, result => {
-        console.log(result)
+        this.realTime(this.item.id, this.cantidad * -1)
         let tem = JSON.parse(JSON.stringify(result.datos))
         tem.producto = JSON.parse(JSON.stringify(this.item))
         this.detalle.push(tem)
@@ -370,7 +408,13 @@ export default {
       this.total = parseFloat(this.total) + parseFloat(row.total)
       let tem = JSON.parse(JSON.stringify(row))
       tem.oldCantidad = oldValor
+      
       http(tem, result => {
+        if(oldValor > row.cantidad){
+          this.realTime(row.productoId, parseInt(oldValor) - parseInt(row.cantidad))
+        }else {
+          this.realTime(row.productoId, ((parseInt(row.cantidad) - parseInt(oldValor))  * -1))
+        }
         this.guardarTemp()
         this.actualizarPedido()
       }, e => {
@@ -404,6 +448,7 @@ export default {
         cantidad: row.cantidad
       }
       http(doc, result => {
+        this.realTime(row.productoId, row.cantidad)
         this.total = parseFloat(this.total) - parseFloat(row.total)
         this.actualizarPedido()
         this.cargarExistencias()
