@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <p>Mostrar estadistica del producto mas vendido</p>
+    
   </q-page>
 </template>
 
@@ -8,7 +8,25 @@
 </style>
 
 <script>
+import http from 'src/funciones/http'
 export default {
-  name: 'PageIndex'
+  name: 'PageIndex',
+  data(){
+    return{
+
+    }
+  },
+  mounted(){
+    this.masVendido()
+  },
+  methods:{
+    masVendido(){
+      http(null, result => {
+        console.log(result)
+      }, e => {
+        this.$q.notify(e)
+      }, 'detalle/masVendido')
+    }
+  }
 }
 </script>

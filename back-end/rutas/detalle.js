@@ -141,4 +141,37 @@ router.post('/pedido', (req, res) => {
     })
 })
 
+router.post('/masVendido', (req,res) => {
+    return sequelize.transaction(t => {
+        return DetallePedido.findAll({
+            attributes: [
+                'productoId',
+                [sequelize.fn('SUM', sequelize.col('cantidad')),'cantidad']
+            ],
+            include: [
+                {
+                    model: Producto,
+                    as: 'producto',
+                    attributes: ['nombre']
+                },
+                {
+                    model: Pedido,
+                    where:{
+                        cancelado: false
+                    },
+                    attributes: ['total']
+                }
+            ],
+            group:['productoId'],
+            transaction: t
+        })
+    }).then(result => {
+        res.json({
+            datos: result
+        })
+    }).catch(e => {
+        res.status(500).json(error(e))
+    })
+})
+
 export default router
