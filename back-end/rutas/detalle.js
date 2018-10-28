@@ -142,10 +142,21 @@ router.post('/pedido', (req, res) => {
 })
 
 router.post('/masVendido', (req,res) => {
+    let f1 = req.body.fecha1
+    let f2 = req.body.fecha2
+    if(f1 > f2){
+        f1 = req.body.fecha2
+        f2 = req.body.fecha1
+    }
+
     return sequelize.transaction(t => {
         return DetallePedido.findAll({
+            where: {
+                fecha:{
+                    [Op.between]: [f1, f2]
+                }
+            },
             attributes: [
-                'productoId',
                 [sequelize.fn('SUM', sequelize.col('cantidad')),'cantidad']
             ],
             include: [
@@ -159,10 +170,12 @@ router.post('/masVendido', (req,res) => {
                     where:{
                         cancelado: false
                     },
-                    attributes: ['total']
+                    attributes: []
                 }
             ],
             group:['productoId'],
+            order:[['cantidad', 'DESC']],
+            limit: 10,
             transaction: t
         })
     }).then(result => {
@@ -173,5 +186,7 @@ router.post('/masVendido', (req,res) => {
         res.status(500).json(error(e))
     })
 })
+
+
 
 export default router

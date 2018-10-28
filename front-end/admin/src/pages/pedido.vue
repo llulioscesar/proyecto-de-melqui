@@ -243,6 +243,7 @@ export default {
           fecha: this.fecha,
           total: 0,
           pendiente: true,
+          cancelado: false,
           direccion: this.direccion
         }
         http(doc, result => {

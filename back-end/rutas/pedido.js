@@ -162,4 +162,79 @@ router.post('/cliente', (req, res) => {
     })
 })
 
+router.post('/masComprador', (req,res) => {
+    let f1 = req.body.fecha1
+    let f2 = req.body.fecha2
+    if(f1 > f2){
+        f1 = req.body.fecha2
+        f2 = req.body.fecha1
+    }
+
+    return sequelize.transaction(t => {
+        return Pedido.findAll({
+            where: {
+                fecha:{
+                    [Op.between]: [f1, f2]
+                },
+                cancelado: false
+            },
+            attributes: [
+                'fecha',
+                [sequelize.fn('COUNT', sequelize.col('usuarioId')),'cantidad']
+            ],
+            include: [
+                {
+                    model: Usuario,
+                    as: 'usuario',
+                    attributes: ['nombre']
+                },
+            ],
+            group:['usuarioId'],
+            //order:[['cantidad', 'DESC']],
+            order: sequelize.literal('cantidad DESC'),
+            limit: 10,
+            transaction: t
+        })
+    }).then(result => {
+        res.json({
+            datos: result
+        })
+    }).catch(e => {
+        res.status(500).json(error(e))
+    })
+})
+
+router.post('/total', (req,res) => {
+    let f1 = req.body.fecha1
+    let f2 = req.body.fecha2
+    if(f1 > f2){
+        f1 = req.body.fecha2
+        f2 = req.body.fecha1
+    }
+
+    return sequelize.transaction(t => {
+        return Pedido.findAll({
+            where: {
+                fecha:{
+                    [Op.between]: [f1, f2]
+                },
+                cancelado: false
+            },
+            attributes: [
+                'fecha',
+                [sequelize.fn('SUM', sequelize.col('total')),'total']
+            ],
+            group:['fecha'],
+            order:[['total', 'DESC']],
+            transaction: t
+        })
+    }).then(result => {
+        res.json({
+            datos: result
+        })
+    }).catch(e => {
+        res.status(500).json(error(e))
+    })
+})
+
 export default router
