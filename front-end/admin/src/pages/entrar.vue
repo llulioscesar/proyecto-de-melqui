@@ -37,6 +37,14 @@ export default {
       loading: false,
     }
   },
+  beforeMount() {
+    this.$nextTick(() => {
+      let usuario = this.$q.localStorage.get.item("usuario");
+      if (usuario) {
+        this.$router.push("/app");
+      }
+    });
+  },
   methods: {
     login() {
       let el = this
@@ -92,6 +100,7 @@ export default {
         if (result.error == false) {
           let user = result.datos;
           if(user.rol == 'admin'){
+            user.contraseña = this.clave
             this.$q.localStorage.set("usuario", user);
             this.$router.push("/app");
           }else{

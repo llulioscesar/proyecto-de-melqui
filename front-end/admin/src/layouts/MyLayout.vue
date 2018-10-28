@@ -108,6 +108,14 @@ export default {
     this.$mqtt.subscribe('app/pedido/nuevo', {qos:1})
     this.cargar()
   },
+  beforeMount() {
+      this.$nextTick(() => {
+        let usuario = this.$q.localStorage.get.item("usuario");
+        if (!usuario) {
+          this.salir()
+        }
+      });
+    },
   methods:{
     cargar(){
       http(null, result => {
@@ -115,7 +123,18 @@ export default {
       }, e => {
 
       }, 'pedido/pendientes')
-    }
+    },
+    salir(){
+        let el = this
+        this.$auth.signOut().then(function() {
+          el.$q.localStorage.clear()
+          el.$router.push('/')
+        }).catch(function(error) {
+          el.$q.notify(error)
+          el.$q.localStorage.clear()
+          el.$router.push('/')
+        });
+      }
   }
 };
 </script>
