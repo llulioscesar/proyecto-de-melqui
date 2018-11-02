@@ -56,10 +56,6 @@
       <router-view />
     </q-page-container>
 
-    <audio id="audio" controls style="display:none">
-      <source type="audio/mp3" src="statics/noti.mp3">
-    </audio>
-
   </q-layout>
 </template>
 
@@ -86,7 +82,7 @@ export default {
         message: 'Se ha cancelado un pedido',
         color: 'yellow-9'
       })
-      var audio = document.getElementById("audio");
+      var audio = new Audio('statics/noti.mp3');
       audio.play();
     },
     'app/pedido/nuevo' (data){
@@ -95,7 +91,7 @@ export default {
         message: 'Un nuevo pedido',
         color: 'primary'
       })
-      var audio = document.getElementById("audio");
+      var audio = new Audio('statics/noti.mp3');
       audio.play();
     }
   },

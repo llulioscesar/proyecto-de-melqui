@@ -3,7 +3,7 @@
      <div class="row">
        <img class="img-producto q-mr-md" :src="this.foto" height="100" style="border: 1px solid #027be3">
       <div class="col-xs-12 col-md-2">
-        <input @change="loadFoto" type="file" id="files" name="files" >
+        <input @change="loadFoto" type="file" id="files" name="files" accept="image/*" >
       </div>
     </div>
     <div class="row">
@@ -36,6 +36,10 @@
           <q-btn color="primary" outline label="Cancelar" @click="reset"/>
         </q-btn-group>
       </div>
+    </div>
+    <div class="row q-mt-md">
+      <p>carga masiva (CSV)</p>
+      <input @change="loadCsv" type="file" id="csv" name="csv" accept=".csv" >
     </div>
     <br><br>
     <q-table :data="objs" row-key="name" :columns="columnas" :filter="buscar" :loading="cargandoT" color="primary"> 
@@ -95,7 +99,7 @@ function getBase64(file, calback) {
      alert('Error: ', error);
    };
 }
-
+import Papa from 'papaparse'
 import http from 'src/funciones/http'
 export default {
   data(){
@@ -315,6 +319,35 @@ export default {
       getBase64(file, result => {
         this.foto = result
       });
+    },
+    loadCsv(){
+      var file = document.getElementById("csv").files[0]
+      let config = {
+        delimiter: "",	// auto-detect
+        newline: "",	// auto-detect
+        quoteChar: '"',
+        escapeChar: '"',
+        header: false,
+        trimHeaders: false,
+        dynamicTyping: false,
+        preview: 0,
+        encoding: "",
+        worker: false,
+        comments: false,
+        step: undefined,
+        complete: function(results, file) {
+          console.log(results);
+          },
+        error: undefined,
+        download: false,
+        skipEmptyLines: false,
+        chunk: undefined,
+        fastMode: undefined,
+        beforeFirstChunk: undefined,
+        withCredentials: undefined,
+        transform: undefined
+      }
+      Papa.parse(file, config)
     }
   }
 }

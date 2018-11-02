@@ -18,8 +18,8 @@
 
           <q-search v-model="buscar" placeholder="Buscar" @input="buscarInventario"></q-search>
 
-          <div v-if="productos.length != 0" class="row no-wrap justify-center">
-            <div style="margin:5px 5px" :class="(producto.stock == 0 ? 'bg-red-3': 'bg-white') + (producto.seleccionado != undefined ? (producto.seleccionado == true ? ' bg-yellow-3' : ' bg-white') : ' bg-white') + ' col-xs-6 card shadow-2 q-pa-md'" v-for="(producto, i) in productos" :key="i" @click="seleccionar(producto)">
+          <div v-if="productos.length != 0" class="row wrap justify-center">
+            <div style="margin:5px 2px" :class="(producto.stock == 0 ? 'bg-red-3': 'bg-white') + (producto.seleccionado != undefined ? (producto.seleccionado == true ? ' bg-yellow-3' : ' bg-white') : ' bg-white') + ' col-xs-5 card shadow-2 q-pa-md'" v-for="(producto, i) in productos" :key="i" @click="seleccionar(producto)">
               <div class="row justify-center">
                 <img :src="producto.producto.foto" style="height:100px; max-width:90%">
               </div>
@@ -108,7 +108,6 @@ export default {
           }
         })
       }
-      
     }
   },
   mounted(){
@@ -205,7 +204,6 @@ export default {
           })
         }
       }
-      
     },
     guardarTem(){
       this.$q.localStorage.set('productos', JSON.parse(JSON.stringify(this.productos)))
