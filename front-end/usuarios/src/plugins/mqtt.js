@@ -21,5 +21,5 @@ export default ({ Vue }) => {
         password: '1234'
     }
 
-    Vue.use(VueMqtt, 'ws://142.44.242.71:9994', options);
+    Vue.use(VueMqtt, 'ws://142.44.242.71:9994/mqtt', options);
 }

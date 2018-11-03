@@ -17,13 +17,13 @@
       </div>
     </div>
     <div class="row q-mt-lg">
-      <div class="col-xs-12 col-md-6  round-borders">
+      <div class="col-xs-12 col-md-7  round-borders">
         <p>Top 10 clientes</p>
         <bar :chart-data="compradores" :options="scale"/>
       </div>
-      <div class="col-xs-12 col-md-6  round-borders">
+      <div class="col-xs-12 col-md-5  round-borders">
         <p>Top 10 de producto mas vendidos</p>
-        <torta :chart-data="vendidos" :options="{responsive: true, maintainAspectRatio: true}"/>
+        <torta :chart-data="vendidos" :options="{responsive: true, maintainAspectRatio: false}"/>
       </div>
     </div>
     
@@ -69,7 +69,7 @@ export default {
       },
       scale: {
         responsive: true, 
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         scales: {
           yAxes: [
           {

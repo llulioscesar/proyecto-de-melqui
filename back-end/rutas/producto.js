@@ -31,6 +31,33 @@ router.post('/insertar', (req, res) => {
     })
 })
 
+router.post('/cargar', (req, res) => {
+    return sequelize.transaction(t => {
+        return Producto.bulkCreate(req.body.datos,{
+            transaction: t
+        }).then(result1 => {
+            let docs = []
+            result1.forEach(item => {
+                docs.push({
+                    id: 0,
+                    productoId: item.id,
+                    entradas: 0,
+                    salidas: 0,
+                    stock: 0,
+                    fecha: moment().startOf('day').unix()
+                })
+            })
+            return Inventario.bulkCreate(docs,{transaction: t}).then(result2 => {return result1})
+        })
+    }).then(result => {
+        res.json({
+            datos: result
+        })
+    }).catch(e => {
+        res.status(500).json(error(e))
+    })
+})
+
 router.post('/actualizar', (req, res) => {
     return sequelize.transaction(t => {
         return Producto.update(req.body, {
