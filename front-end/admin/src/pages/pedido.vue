@@ -437,7 +437,7 @@ export default {
       }
     },
     imprimir(){
-      window.open('/app/recibo', '_blank');
+      window.open('/admin/app/recibo', '_blank');
     },
     cerrar(){
       this.$router.push('/app/pedidos')
