@@ -1,8 +1,8 @@
 <template>
-  <q-layout>
+  <q-layout style="background:url(statics/fondo2.jpg);background-size: cover;background-position: center;background-attachment: fixed;background-repeat:no-repeat">
     
       <q-layout-header class="no-shadow ">
-      <q-toolbar  color="primary" class="q-py-none no-shadow no-border">
+      <q-toolbar  color="yellow" class="q-py-none no-shadow no-border text-black">
         <q-btn icon="keyboard_arrow_left" class="no-shadow" @click="$router.push('/app')"/>
         <q-toolbar-title>
           Mr Tata
@@ -11,12 +11,12 @@
     </q-layout-header>
 
     <q-page-container>
-      <q-tabs align="justify" class="no-shadow" style="border-radius: 0px">
+      <q-tabs align="justify" color="yellow" text-color="black" class="no-shadow" style="border-radius: 0px">
         <q-tab default label="Productos" name="tab1" slot="title" />
         <q-tab label="Pedido" name="tab2" slot="title" />
         <q-tab-pane name="tab1">
 
-          <q-search v-model="buscar" placeholder="Buscar" @input="buscarInventario"></q-search>
+          <q-search class="fondo1 q-pa-md" dark color="yellow" v-model="buscar" placeholder="Buscar" @input="buscarInventario"></q-search>
 
           <div v-if="productos.length != 0" class="row wrap justify-center">
             <div style="margin:5px 2px" :class="(producto.stock == 0 ? 'bg-red-3': 'bg-white') + (producto.seleccionado != undefined ? (producto.seleccionado == true ? ' bg-yellow-3' : ' bg-white') : ' bg-white') + ' col-xs-5 card shadow-2 q-pa-md'" v-for="(producto, i) in productos" :key="i" @click="seleccionar(producto)">
@@ -32,21 +32,21 @@
 
         </q-tab-pane>
         <q-tab-pane name="tab2">
-          <div class="row items-center">
-            <div class="col-xs-8">
+          <div class="row items-center q-pa-md fondo1">
+            <div class="col-xs-9">
               Total: ${{(parseFloat(total)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') }}
             </div>
-            <div class="col-xs-4">
+            <div class="col-xs-3">
               <q-btn outline round class="no-border" color="primary" icon="save" @click.native="enviarPedido"/>
               <q-btn outline round class="no-border" color="negative" icon="delete" @click.native="eliminarPedido"/>
             </div>
           </div>
-          <div class="row">
-            <q-field label="Direccion">
+          <div class="row q-my-md q-pa-md dir">
+            <q-field class="text-black" label="Direccion">
               <q-input v-model="direccion"></q-input>
             </q-field>
           </div>
-          <q-list no-border link inset-separator>
+          <q-list class="fondo1" no-border link inset-separator>
             <q-item v-for="(item, i) in detalle" :key="i">
               <q-item-side>
                 <q-item-tile avatar>
@@ -82,18 +82,31 @@ export default {
       pendiente: true,
       fecha: 0,
       direccion: '',
-      buscar: ''
+      buscar: '',
+      boton: false
     }
   },
   beforeDestroy(){
     this.$mqtt.unsubscribe('app/pedido')
     if(this.total == 0){
        http('pedido/eliminar', {id: this.id}, result => {
+          this.$mqtt.publish('app/pedido/cancelado', '1')
           this.$q.localStorage.remove('pedido')
         }, e => {
           this.$q.notify(e)
         })
+    } else {
+      if(this.boton == false){
+        this.$mqtt.publish('app/pedido/cancelado', '1')
+        this.detalle.forEach(item => {
+          http('detalle/eliminar', JSON.parse(JSON.stringify(item)), result => {
+            this.realTime(item.productoId, item.cantidad)
+          },e=>{})
+        })
+        this.eliminar()
+      }
     }
+    this.$q.localStorage.remove('pedido')
   },
   mqtt:{
     'app/pedido' (data, tema){
@@ -130,9 +143,11 @@ export default {
           total: 0,
           fecha: this.fecha,
           pendiente: true,
+          cliente: true,
           direccion: this.$q.localStorage.get.item('usuario').direccion
         }
         http('pedido/insertar', doc, result => {
+          this.$mqtt.publish('app/pedido/refresh', '1')
           this.id = result.datos.id
           this.guardarTem()
         }, e => {
@@ -172,36 +187,45 @@ export default {
       })
     },
     seleccionar(producto){
+      console.log(producto)
       if(producto.stock > 0){
         let ok = false
-        this.detalle.forEach(item => {
+        this.detalle.forEach(item => { 
           if(item.productoId == producto.productoId){
             ok = true
           }
         })
         if(ok == false){
-          producto.seleccionado = true
-          producto.stock = producto.stock - 1
-          let doc = {
-            pedidoId: this.id,
-            productoId: producto.productoId,
-            fecha: this.fecha,
-            precio: producto.producto.precioVenta,
-            cantidad: 1,
-            total: producto.producto.precioVenta
-          }
-          http('detalle/insertar', doc, result => {
-            this.realTime(producto.productoId, -1)
-            let item = JSON.parse(JSON.stringify(result.datos))
-            item.producto = JSON.parse(JSON.stringify(producto.producto))
-            this.detalle.push(item)
-            this.total = parseFloat(this.total) + parseFloat(producto.producto.precioVenta)
-            this.guardarTem()
-            this.actualizarPedido()
-          }, e => {
-            this.$q.notify(e)
-            producto.seleccionado = false
-          })
+          let el = this
+          this.$q.dialog({
+            title: 'Agregar Producto',
+            message: '¿Desea agregar ' + producto.producto.nombre + '?',
+            ok: 'Si',
+            cancel: 'No'
+          }).then(() => {
+            producto.seleccionado = true
+            producto.stock = producto.stock - 1
+            let doc = {
+              pedidoId: el.id,
+              productoId: producto.productoId,
+              fecha: el.fecha,
+              precio: producto.producto.precioVenta,
+              cantidad: 1,
+              total: producto.producto.precioVenta
+            }
+            http('detalle/insertar', doc, result => {
+              el.realTime(producto.productoId, -1)
+              let item = JSON.parse(JSON.stringify(result.datos))
+              item.producto = JSON.parse(JSON.stringify(producto.producto))
+              el.detalle.push(item)
+              el.total = parseFloat(el.total) + parseFloat(producto.producto.precioVenta)
+              el.guardarTem()
+              el.actualizarPedido()
+            }, e => {
+              el.$q.notify(e)
+              producto.seleccionado = false
+            })
+          }).catch(()=>{})
         }
       }
     },
@@ -274,6 +298,8 @@ export default {
       })
     },
     eliminarItem(item){
+      console.log(item)
+      
       this.$q.dialog({
         title: 'Producto',
         message: 'Desea eliminar el item?',
@@ -286,6 +312,11 @@ export default {
           this.realTime(item.productoId, item.cantidad)
           this.guardarTem()
           this.actualizarPedido()
+          this.productos.forEach(element => { 
+          if(element.productoId == item.producto.id){
+            element.seleccionado = false
+          }
+        })
         }, e => {
           this.$q.notify(e)
         })
@@ -295,16 +326,22 @@ export default {
       if(this.total > 0){
         this.$q.dialog({
           title: 'Enviar Pedido',
-          message: 'Desea enviar el pedido?. Una vez enviado no podras editarlo',
+          message: 'Esta es la direccion de envio del pedido?',
+          prompt: {
+            model: this.direccion,
+            type: 'text'
+          },
           ok: 'Si',
           cancel: 'No'
-        }).then(() => {
+        }).then((data) => {
+          this.direccion = data
+          this.boton = true
           let doc = {
             id: this.id,
             total: this.total,
             pendiente: true,
-            listarPendiente: true,
-            cancelado: false
+            cancelado: false,
+            direccion: this.direccion
           }
           http('pedido/actualizar', doc, result => {
             this.sendAlert()
@@ -329,6 +366,7 @@ export default {
         ok: 'Si',
         cancel: 'No'
       }).then(() => {
+        this.boton = true
         if(ok == false){
           this.detalle.forEach(item => {
              http('detalle/eliminar', JSON.parse(JSON.stringify(item)), result => {
@@ -369,5 +407,25 @@ export default {
 <style>
 .card{
   width: 48%!important
+}
+.q-item:hover{
+  background: none!important;
+}
+.dir{
+  background: linear-gradient(270deg, #246655, #511adb, #db1a6e, #1adb54, #cedb1a, #db1c1a)!important;
+  background-size: 1200% 1200%!important;
+  animation: AnimationName 30s ease infinite!important;
+  border-radius: 5px;
+  color:black;
+}
+
+@keyframes AnimationName { 
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+.q-field-label{
+  color:black;
 }
 </style>

@@ -1,23 +1,25 @@
 <template>
   <q-page padding>
-    <q-input v-model="nombre"  float-label="nombre"></q-input>
-    <q-input type="email" v-model="correo" float-label="correo"></q-input>
-    <q-btn-group class="q-mt-lg">
-      <q-btn color="primary" label="actualizar"></q-btn>
-      <q-btn color="primary" @click.native="mostrar=true" label="cambiar contraseña"></q-btn>
-      <q-btn color="primary" label="salir" @click.native="salir"></q-btn>
-    </q-btn-group>
+    <div class="fondo1 q-pa-md">
+      <q-input color="yellow-7" v-model="nombre"  float-label="nombre"></q-input>
+      <q-input color="yellow-7" type="email" v-model="correo" float-label="correo"></q-input>
+      <q-btn-group class="q-mt-lg">
+        <q-btn color="yellow-7" class="text-black" label="actualizar"></q-btn>
+        <q-btn color="yellow-7" class="text-black" @click.native="mostrar=true" label="cambiar contraseña"></q-btn>
+        <q-btn color="yellow-7" class="text-black" label="salir" @click.native="salir"></q-btn>
+      </q-btn-group>
+    </div>
 
     <q-modal v-model="mostrar">
       <div class="q-ma-md">
         <p>Cambio de contraseña</p>
-        <q-input type="password" v-model="pass" float-label="Ingrese su contraseña"></q-input>
-        <q-input type="password" v-model="pass1" float-label="Nueva contraseña"></q-input>
-        <q-input type="password" v-model="pass2" float-label="Confirme la contraseña"></q-input>
+        <q-input color="yellow-7" type="password" v-model="pass" float-label="Ingrese su contraseña"></q-input>
+        <q-input color="yellow-7" type="password" v-model="pass1" float-label="Nueva contraseña"></q-input>
+        <q-input color="yellow-7" type="password" v-model="pass2" float-label="Confirme la contraseña"></q-input>
         <div class="row justify-center">
           <q-btn-group class="q-mt-md">
-            <q-btn color="primary" label="cambiar" @click.native="cambiarPass"></q-btn>
-            <q-btn color="primary" label="cancelar" @click.native="mostrar=false;pass='';pass1='';pass2=''"></q-btn>
+            <q-btn color="yellow-7" class="text-black" label="cambiar" @click.native="cambiarPass"></q-btn>
+            <q-btn color="yellow-7" class="text-black" label="cancelar" @click.native="mostrar=false;pass='';pass1='';pass2=''"></q-btn>
           </q-btn-group>
         </div>
       </div>

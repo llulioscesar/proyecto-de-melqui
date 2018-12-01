@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <q-list link no-border inset-separator>
+    <q-list link no-border inset-separator class="fondo1">
       <q-item @click.native="isDatos=true">
         <q-item-main>
           <q-item-tile label>Actualizar datos personales</q-item-tile>
@@ -30,13 +30,13 @@
         </q-field>
         <br>
         <q-field label="Nuevo correo">
-          <q-input type="email" v-model="temCorreo"/>
+          <q-input color="yellow-7" type="email" v-model="temCorreo"/>
         </q-field>
 
         <div class="row justify-center q-mt-md">
           <q-btn-group>
-            <q-btn :disabled="!isEmail(temCorreo)" color="primary" label="actualizar" @click.native="actualizarCorreo"/>
-            <q-btn color="primary" label="cerrar" @click.native="isCorreo = false;temCorreo=''"/>
+            <q-btn :disabled="!isEmail(temCorreo)" color="yellow-7" class="text-black" label="actualizar" @click.native="actualizarCorreo"/>
+            <q-btn color="yellow-7" class="text-black" label="cerrar" @click.native="isCorreo = false;temCorreo=''"/>
           </q-btn-group>
         </div>
       </div>
@@ -45,21 +45,21 @@
     <q-modal v-model="isPass" minimized no-esc-dismiss no-backdrop-dismiss>
       <div class="q-pa-md">
         <q-field v-if="usuario!= null" label="Contraseña actual">
-          <q-input type="password" v-model="temPass"/>
+          <q-input color="yellow.-7" type="password" v-model="temPass"/>
         </q-field>
         <br>
         <q-field label="Nuevo contraseña">
-          <q-input type="password" v-model="pass1"/>
+          <q-input color="yellow-7" type="password" v-model="pass1"/>
         </q-field>
         <br>
         <q-field label="Confirmar contraseña">
-          <q-input type="password" v-model="pass2"/>
+          <q-input color="yellow-7" type="password" v-model="pass2"/>
         </q-field>
 
         <div class="row justify-center q-mt-md">
           <q-btn-group>
-            <q-btn color="primary" label="actualizar" @click.native="actualizarPass"/>
-            <q-btn color="primary" label="cerrar" @click.native="isPass = false;temPass='';pass1='';pass2=''"/>
+            <q-btn color="yellow-7" class="text-black" label="actualizar" @click.native="actualizarPass"/>
+            <q-btn color="yellow-7" class="text-black" label="cerrar" @click.native="isPass = false;temPass='';pass1='';pass2=''"/>
           </q-btn-group>
         </div>
       </div>
@@ -68,24 +68,24 @@
     <q-modal v-model="isDatos" minimized no-esc-dismiss no-backdrop-dismiss>
       <div class="q-pa-md" v-if="usuario!= null">
         <q-field  label="Cedula">
-          <q-input v-model="usuario.cedula"/>
+          <q-input color="yellow-7" v-model="usuario.cedula"/>
         </q-field>
         <br>
         <q-field label="Celular">
-          <q-input v-model="usuario.celular"/>
+          <q-input color="yellow-7" v-model="usuario.celular"/>
         </q-field>
         <br>
         <q-field label="Nombre">
-          <q-input v-model="usuario.nombre"/>
+          <q-input color="yellow-7" v-model="usuario.nombre"/>
         </q-field>
         <q-field label="Direccion">
-          <q-input v-model="usuario.direccion"/>
+          <q-input color="yellow-7" v-model="usuario.direccion"/>
         </q-field>
 
         <div class="row justify-center q-mt-md">
           <q-btn-group>
-            <q-btn color="primary" label="actualizar" @click.native="actualizarDatos"/>
-            <q-btn color="primary" label="cerrar" @click.native="isDatos = false"/>
+            <q-btn color="yellow-7" class="text-black" label="actualizar" @click.native="actualizarDatos"/>
+            <q-btn color="yellow-7" class="text-black" label="cerrar" @click.native="isDatos = false"/>
           </q-btn-group>
         </div>
       </div>

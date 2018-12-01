@@ -1,17 +1,17 @@
 <template>
   <q-layout>
-    <q-page-container>
+    <q-page-container style="background:url(statics/fondo1.jpg);background-size: cover;background-position: center;background-attachment: fixed;background-repeat:no-repeat">
       <q-page padding>
-        <q-card class="card-login bg-white no-shadow">
+        <q-card class="card-login no-shadow text-white" style="background:rgba(0,0,0,0.9)">
           <q-card-title>
             Mr Tata
-            <span slot="subtitle">Inicio de sesion</span>
+            <span class="text-white" slot="subtitle">Inicio de sesion</span>
           </q-card-title>
           <q-card-main class="q-px-xl">
             <br>
-            <q-input v-model="correo" type="email" placeholder="Correo" clearable/>
+            <q-input dark v-model="correo" type="email" placeholder="Correo" clearable/>
             <br>
-            <q-input v-model="clave" type="password" placeholder="Contraseña" clearable />
+            <q-input dark v-model="clave" type="password" placeholder="Contraseña" clearable />
             <br>
             <q-btn class="no-shadow" label="Recuperar contraseña" style="padding:0" @click.native="restablecer=true"/>
           </q-card-main>
@@ -22,7 +22,7 @@
             </q-btn-group>
           </q-card-actions>
         </q-card>
-        <h4 class="text-center">Entrar con</h4>
+        <h4 class="text-center text-white">Entrar con</h4>
         <div class="row justify-center">
           <q-btn-group class="no-shadow">
               <q-btn label="Facebook" style="background:#3b5998;color:white" @click.native="facebook"/>

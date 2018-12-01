@@ -1,27 +1,27 @@
 <template>
   <q-layout>
-    <q-page-container>
+    <q-page-container style="background:url(statics/fondo1.jpg);background-size: cover;background-position: center;background-attachment: fixed;background-repeat:no-repeat">
       <q-page padding>
-        <q-card class="card-login bg-white no-shadow">
-          <q-card-title>
+        <q-card class="card-login no-shadow" style="background:rgba(0,0,0,0.9)">
+          <q-card-title class="text-white">
             Mr Tata
-            <span slot="subtitle">Cuenta nueva</span>
+            <span class="text-white" slot="subtitle">Cuenta nueva</span>
           </q-card-title>
           <q-card-main class="q-px-xl">
             <form>
-            <q-input v-model="nombre" type="text" placeholder="Nombre" clearable/>
+            <q-input dark v-model="nombre" type="text" placeholder="Nombre" clearable/>
             <br>
-            <q-input v-model="cedula" type="number" placeholder="Cedula" clearable/>
+            <q-input  dark v-model="cedula" type="number" placeholder="Cedula" clearable/>
             <br>
-            <q-input v-model="direccion" type="text" placeholder="Direccion" clearable/>
+            <q-input dark v-model="direccion" type="text" placeholder="Direccion" clearable/>
             <br>
-            <q-input v-model="celular" type="number" placeholder="Numero de Celular" clearable/>
+            <q-input dark v-model="celular" type="number" placeholder="Numero de Celular" clearable/>
             <br>
-            <q-input v-model="correo" type="email" placeholder="Correo" clearable/>
+            <q-input dark v-model="correo" type="email" placeholder="Correo" clearable/>
             <br>
-            <q-input v-model="clave" type="password" placeholder="Contraseña" clearable />
+            <q-input dark v-model="clave" type="password" placeholder="Contraseña" clearable />
             <br>
-            <q-input v-model="clave2" type="password" placeholder="Repita la contraseña" clearable />
+            <q-input dark v-model="clave2" type="password" placeholder="Repita la contraseña" clearable />
             <br>
             <vue-recaptcha v-if="!$q.platform.is.cordova" ref="recaptcha" @verify="onVerify" @expired="onExpired" :sitekey="'6LcXo3EUAAAAAKcmGj4Vf1ftxoremGwlHS4xWkY_'"></vue-recaptcha>
             </form>

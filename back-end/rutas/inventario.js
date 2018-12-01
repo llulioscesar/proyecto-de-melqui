@@ -22,6 +22,26 @@ router.post('/', (req, res) => {
     })
 })
 
+router.post('/pedido', (req, res) => {
+    return sequelize.transaction(t => {
+        return Inventario.findAll({
+            where:{
+                stock:{
+                    [Op.lte]: 30
+                }
+            },
+            include: [Producto],
+            transaction: t
+        })
+    }).then(result => {
+        res.json({
+            datos: result
+        })
+    }).catch(e => {
+        res.status(500).json(error(e))
+    })
+})
+
 router.post('/existencias', (req, res) => {
     return sequelize.transaction(t => {
         return Inventario.findAll({

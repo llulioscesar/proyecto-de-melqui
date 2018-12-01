@@ -21,12 +21,12 @@ const pedido = sequelize.define('pedido', {
         allowNull: false,
         defaultValue: true
     },
-    venta:{
+    cliente:{
         type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue: true
+        defaultValue: false
     },
-    listarPendiente:{
+    venta:{
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: true

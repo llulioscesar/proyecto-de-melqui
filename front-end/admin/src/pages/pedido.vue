@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
-    <p class="q-mx-md"><strong>Nuevo pedido:</strong> #{{id}} <strong>Total: </strong> ${{(parseFloat(total)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}} </p>
-    <div class="row items-center">
+    <p class=" q-pa-md fondo1"><strong>Nuevo pedido:</strong> #{{id}} <strong>Total: </strong> ${{(parseFloat(total)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}} </p>
+    <div class="row items-center fondo1">
       <div class="col-xs-12 col-md-3">
         <div class="q-ma-md">
           <strong>Fecha:</strong> <br>
@@ -35,7 +35,7 @@
       </q-btn-group>
     </div>
 
-    <q-table class="q-mt-md" :data="detalle" row-key="name" :columns="columnas">
+    <q-table class="q-mt-md fondo1" :data="detalle" row-key="name" :columns="columnas">
       <q-tr slot="body" slot-scope="props" :props="props">
         <q-td :props="props" key="producto">
           {{props.row.producto.nombre}}
@@ -170,6 +170,23 @@ export default {
     }
   },
   beforeDestroy(){
+
+    if(this.cliente != null){
+      if(this.total == 0){
+        http({id: this.id}, result => {
+            this.$mqtt.publish('app/pedido/despachado', 'true')
+            this.reset()
+            LocalStorage.remove('pedido')
+          }, e => {
+            this.$q.notify(e)
+          }, 'pedido/eliminar')
+      } else {
+        this.actualizarPedido()
+      }
+    }
+
+    
+
     LocalStorage.remove('pedido')
     this.$mqtt.unsubscribe('app/pedido')
   },
@@ -427,7 +444,8 @@ export default {
         let doc = {
           id: this.id,
           usuarioId: this.cliente.value,
-          total: this.total
+          total: this.total,
+          direccion: this.direccion
         }
         http(doc, result => {
           this.guardarTemp()

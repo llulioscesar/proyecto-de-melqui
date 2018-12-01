@@ -1,20 +1,20 @@
 <template>
   <q-layout>
     <q-layout-header>
-      <q-toolbar color="primary" class="q-py-none">
+      <q-toolbar color="yellow" class="q-py-none text-black">
         <q-toolbar-title>
           Mr Tata
         </q-toolbar-title>
       </q-toolbar>
   
-      <q-tabs align="justify">
+      <q-tabs align="justify" color="yellow" text-color="black">
         <q-route-tab label="Mis pedidos" to="/app" exact slot="title" />
         <q-route-tab label="Cuenta" to="/app/cuenta" exact slot="title" />
       </q-tabs>
     </q-layout-header>
   
     <q-page-container>
-      <router-view />
+      <router-view style="background:url(statics/fondo2.jpg);background-size: cover;background-position: center;background-attachment: fixed;background-repeat:no-repeat"/>
     </q-page-container>
   </q-layout>
 </template>
@@ -52,5 +52,9 @@
 </script>
 
 <style>
-  
+  .fondo1{
+    background: rgba(0,0,0,0.9)!important;
+    color:white!important;
+    border-radius: 5px;
+  }
 </style>

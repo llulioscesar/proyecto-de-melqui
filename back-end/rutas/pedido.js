@@ -114,7 +114,7 @@ router.post('/pendientes', (req, res) => {
         return Pedido.count({
             where: {
                 cancelado: false,
-                listarPendiente: true
+                pendiente: true
             },
             transaction: t
         })

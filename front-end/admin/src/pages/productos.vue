@@ -1,12 +1,12 @@
 <template>
   <q-page padding>
-     <div class="row">
+     <div class="row q-pa-md fondo1">
        <img class="img-producto q-mr-md" :src="this.foto" height="100" style="border: 1px solid #027be3">
       <div class="col-xs-12 col-md-2">
         <input @change="loadFoto" type="file" id="files" name="files" accept="image/*" >
       </div>
     </div>
-    <div class="row">
+    <div class="row q-mt-md fondo1 q-pt-md">
       <div class="col-xs-12 col-md-3">
         <q-input class="q-mx-md" float-label="Nombre" v-model="nombre"></q-input>
       </div>
@@ -17,7 +17,7 @@
         <q-input class="q-mx-md" float-label="Descripcion" v-model="descripcion"></q-input>
       </div>
     </div>
-    <div class="row">
+    <div class="row fondo1 q-pb-md">
       <div class="col-xs-12 col-md-2">
         <q-input class="q-mx-md" type="number" float-label="Precio de compra" v-model="compra"></q-input>
       </div>
@@ -27,10 +27,10 @@
       <div class="col-xs-12 col-md-2 q-mt-md ">
         <q-select class="q-mx-md" v-model="categoria" :options="categorias" />
       </div>
-      <div class="col-xs-12 col-md-2 q-mt-md  ">
+      <div class="col-xs-12 col-md-3 q-mt-md  ">
         <q-checkbox class="q-mx-md" label="Deshabilitado" v-model="deshabilitado"/>
       </div>
-      <div class="col-xs-12 col-md-4 q-mt-md">
+      <div class="col-xs-12 col-md-3 q-mt-md">
         <q-btn-group>
           <q-btn :loading="cargando" :label="editar ? 'Actualizar' : 'Guardar'" color="primary" @click="ejecutar"/>
           <q-btn color="primary" outline label="Cancelar" @click="reset"/>
@@ -48,7 +48,7 @@
       </div>
     </div>
     <br><br>
-    <q-table :data="objs" row-key="name" :columns="columnas" :filter="buscar" :loading="cargandoT" color="primary"> 
+    <q-table class="fondo1" :data="objs" row-key="name" :columns="columnas" :filter="buscar" :loading="cargandoT" color="primary"> 
       <template slot="top-left" slot-scope="props">
         <q-search hide-underline placeholder="Buscar producto" v-model="buscar" />
       </template>

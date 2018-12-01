@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <q-pull-to-refresh :handler="refresher" refresh-message="Actualizando" pull-message="Tire hacia abajo para refrescar" release-message="Suéltelo para actualizar">
-      <div class="flex flex-center" v-if="pedidos.length == 0">
+      <div class="flex flex-center fondo1 q-py-md" v-if="pedidos.length == 0">
         <div>
           <img src="statics/vacio.PNG" width="200px">
           <br>
@@ -11,11 +11,12 @@
         </div>
       </div>
       <div v-else>
-        <q-list no-border link inset-separator>
+        <q-list no-border link inset-separator class="fondo1">
           <q-item v-for="(pedido, i) in pedidos" :key="i" @click.native="ver(pedido)">
             <q-item-main>
               <q-item-tile label>{{$moment.unix(pedido.fecha).format('MMMM DD [de] YYYY')}}</q-item-tile>
-              <q-item-tile sublabel>${{(parseFloat(pedido.total)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}}</q-item-tile>
+              <q-item-tile class="text-white" sublabel><strong>Total</strong> ${{(parseFloat(pedido.total)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}}</q-item-tile>
+              <q-item-tile class="text-white" sublabel><strong>Direccion:</strong> {{pedido.direccion}}</q-item-tile>
             </q-item-main>
             <q-item-side right>
               <q-item-tile v-if="!pedido.cancelado" :color="pedido.pendiente ? 'yellow-9' : 'primary'" :icon="pedido.pendiente ? 'access_time': 'done_all'"></q-item-tile>
@@ -27,7 +28,7 @@
     </q-pull-to-refresh>
   
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn class="shadow-8" size="lg" round color="primary" icon="add" @click.native="$router.push('/pedido')"/>
+      <q-btn class="shadow-8 text-black" size="lg" round color="yellow" icon="add" @click.native="$router.push('/pedido')"/>
     </q-page-sticky>
 
     <q-modal minimized v-model="verificado" no-esc-dismiss no-backdrop-dismiss>
@@ -136,6 +137,7 @@
       cargar(done){
         http('pedido/cliente', {id: this.$q.localStorage.get.item('usuario').id}, result => {
           this.pedidos = JSON.parse(JSON.stringify(result.datos))
+          console.log(this.pedidos)
           console.log(result.datos)
           if(done != null || done != undefined){
             done()

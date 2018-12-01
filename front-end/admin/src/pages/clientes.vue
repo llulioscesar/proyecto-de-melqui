@@ -1,41 +1,41 @@
 <template>
   <q-page padding>
-    <p class="q-mx-md">Gestion de clientes</p>
+    <p class="q-pa-md fondo1">Gestion de clientes</p>
 
-    <div class="row">
+    <div class="row fondo1 q-pt-md">
       <div class="col-xs-12 col-md-3">
-        <q-input class="q-mx-md" float-label="Cedula" v-model="cedula"></q-input>
+        <q-input color="yellow-7" class="q-mx-md" float-label="Cedula" v-model="cedula"></q-input>
       </div>
       <div class="col-xs-12 col-md-3">
-        <q-input class="q-mx-md" float-label="Nombre" v-model="nombre"></q-input>
+        <q-input color="yellow-7" class="q-mx-md" float-label="Nombre" v-model="nombre"></q-input>
       </div>
       <div class="col-xs-12 col-md-3">
-        <q-input class="q-mx-md" float-label="Correo" v-model="correo"></q-input>
+        <q-input color="yellow-7" class="q-mx-md" float-label="Correo" v-model="correo"></q-input>
       </div>
       <div class="col-xs-12 col-md-3">
-        <q-input class="q-mx-md" float-label="Direccion" v-model="direccion"></q-input>
+        <q-input color="yellow-7" class="q-mx-md" float-label="Direccion" v-model="direccion"></q-input>
       </div>
     </div>
-    <div class="row">
+    <div class="row fondo1 q-pb-md">
       <div class="col-xs-12 col-md-3 ">
-        <q-input class="q-mx-md" type="number" float-label="Celular" v-model="celular"></q-input>
+        <q-input color="yellow-7" class="q-mx-md" type="number" float-label="Celular" v-model="celular"></q-input>
       </div>
       <div class="col-xs-12 col-md-3 ">
-        <q-input class="q-mx-md" type="password" float-label="Contraseña" v-model="contraseña"></q-input>
+        <q-input color="yellow-7" class="q-mx-md" type="password" float-label="Contraseña" v-model="contraseña"></q-input>
       </div>
-      <div class="col-xs-12 col-md-2 q-mt-md  ">
-        <q-checkbox class="q-mx-md" label="Deshabilitado" v-model="deshabilitado"/>
+      <div class="col-xs-12 col-md-3 q-mt-md  ">
+        <q-checkbox color="yellow-7" class="q-mx-md" label="Deshabilitado" v-model="deshabilitado"/>
       </div>
-      <div class="col-xs-12 col-md-4 q-mt-md">
+      <div class="col-xs-12 col-md-3 q-mt-md">
         <q-btn-group>
-          <q-btn :loading="cargando" :label="editar ? 'Actualizar' : 'Guardar'" color="primary" @click="ejecutar"/>
-          <q-btn color="primary" outline label="Cancelar" @click="reset"/>
+          <q-btn :loading="cargando" :label="editar ? 'Actualizar' : 'Guardar'" color="yellow-7" @click="ejecutar"/>
+          <q-btn color="yellow-7" outline label="Cancelar" @click="reset"/>
         </q-btn-group>
       </div>
     </div>
 
-    <br><br>
-    <q-table :data="objs" :columns="columnas" :loading="cargandoT" row-key="name">
+    <br>
+    <q-table class="fondo1" :data="objs" :columns="columnas" :loading="cargandoT" row-key="name">
       <template slot="top-left" slot-scope="props">
         <q-search hide-underline placeholder="Buscar cliente" v-model="buscar" />
       </template>
@@ -56,7 +56,7 @@
           {{props.row.celular}}
         </q-td>
         <q-td key="deshabilitado" :props="props" auto-width>
-          <q-checkbox v-model="props.row.deshabilitado" readonly />
+          <q-checkbox color="yellow-7" v-model="props.row.deshabilitado" readonly />
         </q-td>
         <q-td auto-width>
           <q-btn color="secondary" t label="Editar" class="q-mr-sm" @click="editarDatos(props.row)"/>

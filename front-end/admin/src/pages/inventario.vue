@@ -1,31 +1,33 @@
 <template>
   <q-page padding>
-    <p>Existencias</p>
+    <div class="fondo1 q-mb-md q-pa-md">Existencias
+      <q-checkbox class="q-ml-xl" color="yellow-7" v-model="pedido" label="Para pedido" @input="cambiar"></q-checkbox>
+    </div>
 
-    <q-table :data="objs" :columns="columnas" row-key="name" :filter="search">
+    <q-table class="fondo1" :data="objs" :columns="columnas" row-key="name" :filter="search">
       <template slot="top-left" slot-scope="props">
-        <q-search hide-underline placeholder="Buscar" v-model="search" />
+        <q-search hide-underline placeholder="Buscar" color="yellow-7" v-model="search" />
       </template>
-      <q-tr slot="body" slot-scope="props" :props="props">
-        <q-td :props="props" key="referencia">
+      <q-tr style="border-color:rgba(0,0,0,0.12)!important" slot="body" slot-scope="props" :props="props" :class="(props.row.stock <= 10 ? 'bg-red-1' : (props.row.stock > 10 && props.row.stock <= 100 ? 'bg-yellow-1' : ''))">
+        <q-td :style="(props.row.stock <= 100 ? 'color:black!important;border-color:rgba(0,0,0,0.12)!important' : '')" :props="props" key="referencia">
           {{props.row.producto.referencia}}
         </q-td>
-        <q-td :props="props" key="producto">
+        <q-td :style="(props.row.stock <= 100 ? 'color:black!important;border-color:rgba(0,0,0,0.12)!important' : '')" :props="props" key="producto">
           {{props.row.producto.nombre}}
         </q-td>
-        <q-td :props="props" key="categoria">
+        <q-td  :style="(props.row.stock <= 100 ? 'color:black!important;border-color:rgba(0,0,0,0.12)!important' : '')" :props="props" key="categoria">
           {{props.row.producto.categoria}}
         </q-td>
-        <q-td :props="props" key="descripcion">
+        <q-td :style="(props.row.stock <= 100 ? 'color:black!important;border-color:rgba(0,0,0,0.12)!important' : '')" :props="props" key="descripcion">
           {{props.row.producto.descripcion}}
         </q-td>
-        <q-td :props="props" key="entradas">
+        <q-td :style="(props.row.stock <= 100 ? 'color:black!important;border-color:rgba(0,0,0,0.12)!important' : '')" :props="props" key="entradas">
           {{ props.row.entradas }}
         </q-td>
-        <q-td :props="props" key="salidas">
+        <q-td :style="(props.row.stock <= 100 ? 'color:black!important;border-color:rgba(0,0,0,0.12)!important' : '')" :props="props" key="salidas">
           {{props.row.salidas}}
         </q-td>
-        <q-td :props="props" key="stock">
+        <q-td :style="(props.row.stock <= 100 ? 'color:black!important;border-color:rgba(0,0,0,0.12)!important' : '')" :props="props" key="stock">
           {{props.row.stock}}
         </q-td>
       </q-tr>
@@ -39,6 +41,7 @@ import http from 'src/funciones/http'
 export default {
   data(){
     return{
+      pedido: false,
       objs: [],
       search: '',
       columnas: [
@@ -83,7 +86,8 @@ export default {
           name: "stock",
           field: "stock",
           label: "Stock",
-          align: "right"
+          align: "right",
+          sortable: true,
         }
       ]
     }
@@ -101,6 +105,17 @@ export default {
         this.$q.notify(e)
       }, 'inventario/')
     },
+    cambiar(){
+      if(this.pedido){
+        http(null, result => {
+          this.objs = JSON.parse(JSON.stringify(result.datos))
+        }, e => {
+          this.$q.notify(e)
+        }, 'inventario/pedido')
+      } else{
+        this.cargar()
+      }
+    }
   }
 }
 </script>

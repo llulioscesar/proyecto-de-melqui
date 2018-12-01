@@ -1,38 +1,38 @@
 <template>
   <q-page padding>
-    <div class="row items-center">
+    <div class="row items-center fondo1" >
       <div class="col-xs-12 col-md-2 col-lg-2">
-        <q-radio class="q-mx-md" v-model="filtrar" val="0"  label="Pendientes" @input="cargarFiltro"/>
+        <q-radio color="yellow-7" class="q-mx-md" v-model="filtrar" val="0"  label="Pendientes" @input="cargarFiltro"/>
       </div>
       <div class="col-xs-12 col-md-2 col-lg-2">
-        <q-radio class="q-mx-md" v-model="filtrar" val="1"  label="Entregados" style="margin-left: 10px" @input="cargarFiltro"/>
+        <q-radio color="yellow-7" class="q-mx-md" v-model="filtrar" val="1"  label="Entregados" style="margin-left: 10px" @input="cargarFiltro"/>
       </div>
       <div class="col-xs-12 col-md-2 col-lg-2">
-        <q-radio class="q-mx-md" v-model="filtrar" val="2"  label="Todos" style="margin-left: 10px" @input="cargarFiltro"/>
+        <q-radio color="yellow-7" class="q-mx-md" v-model="filtrar" val="2"  label="Todos" style="margin-left: 10px" @input="cargarFiltro"/>
       </div>
       <div class="col-xs-12 col-md-3">
-        <q-datetime class="q-mx-md" stack-label="fecha inicial" v-model="f1" type="date" @change="cambiarF1"/>
+        <q-datetime color="yellow" class="q-mx-md" stack-label="fecha inicial" v-model="f1" type="date" @change="cambiarF1"/>
       </div>
       <div class="col-xs-12 col-md-3">
-        <q-datetime class="q-mx-md" stack-label="fecha final" v-model="f2" type="date" @change="cambiarF2"/>
+        <q-datetime color="yellow" class="q-mx-md" stack-label="fecha final" v-model="f2" type="date" @change="cambiarF2"/>
       </div> 
     </div>
-    <q-table class="q-mt-xl" :data="pedidos" :columns="columnas" row-key="name">
-          <q-tr slot="body" slot-scope="props" :props="props" :class="props.row.cancelado ? 'bg-red-1' : (props.row.listarPendiente? 'bg-white' : 'bg-yellow-1')">
-            <q-td :props="props" key="id">
+    <q-table class="q-mt-xl fondo1" :data="pedidos" :columns="columnas" row-key="name">
+          <q-tr slot="body" slot-scope="props" :props="props" :class="(props.row.cancelado ? 'bg-red-1' : (props.row.pendiente ? 'bg-yellow-1' : ''))">
+            <q-td :style="(props.row.cancelado || props.row.pendiente ? 'color:black!important;border-color:rgba(0,0,0,0.12)!important' : '')" :props="props" key="id">
               {{props.row.id}}
             </q-td>
-            <q-td :props="props" key="cliente">
-              <q-icon :color="props.row.listarPendiente ? 'primary' : 'black'" :name="props.row.listarPendiente ? 'smartphone' : 'person'" size="18px"></q-icon>
+            <q-td :style="(props.row.cancelado || props.row.pendiente ? 'color:black!important;border-color:rgba(0,0,0,0.12)!important' : '')" :props="props" key="cliente">
+              <q-icon :color="props.row.cliente ? 'yellow' : (props.row.cancelado || props.row.pendiente ? 'black' : 'white')" :name="props.row.cliente ? 'smartphone' : 'person'" size="18px"></q-icon>
               {{props.row.usuario.nombre}}
             </q-td>
-            <q-td :props="props" key="direccion">
+            <q-td :style="(props.row.cancelado || props.row.pendiente ? 'color:black!important;border-color:rgba(0,0,0,0.12)!important' : '')" :props="props" key="direccion">
               {{props.row.direccion}}
             </q-td>
-            <q-td :props="props" key="fecha">
+            <q-td :style="(props.row.cancelado || props.row.pendiente ? 'color:black!important;border-color:rgba(0,0,0,0.12)!important' : '')" :props="props" key="fecha">
               {{$moment.unix(props.row.fecha).format('MMMM DD [de] YYYY')}}
             </q-td>
-            <q-td :props="props" key="total">
+            <q-td :style="(props.row.cancelado || props.row.pendiente ? 'color:black!important;border-color:rgba(0,0,0,0.12)!important' : '')" :props="props" key="total">
               ${{parseFloat(props.row.total).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}}
             </q-td>
             <q-td :props="props" key="acciones" auto-width>
@@ -43,7 +43,7 @@
           </q-tr>
         </q-table>  
       <q-page-sticky position="bottom-right" :offset="[12, 12]">
-        <q-btn size="md" round color="primary" icon="add" @click="$router.push('/app/pedido')"/>
+        <q-btn size="md" round color="yellow" class="text-black" icon="add" @click="nuevo"/>
       </q-page-sticky>
   </q-page>
 </template>
@@ -105,10 +105,12 @@ export default {
   beforeDestroy(){
     this.$mqtt.unsubscribe('app/pedido/cancelado')
     this.$mqtt.unsubscribe('app/pedido/nuevo')
+    this.$mqtt.unsubscribe('app/pedido/refresh')
   },
   mounted(){
     this.$mqtt.subscribe('app/pedido/cancelado', {qos:1})
     this.$mqtt.subscribe('app/pedido/nuevo', {qos:1})
+    this.$mqtt.subscribe('app/pedido/refresh')
     let f1 = this.$moment().startOf('day')
     let f2 = this.$moment(f1).subtract(7, 'days')
     this.f2 = f1.toDate()
@@ -116,6 +118,7 @@ export default {
     this.fecha1 = f2.unix()
     this.fecha2 = f1.unix()
     this.cargarFiltro()
+    LocalStorage.remove('pedido');
   },
   mqtt:{
     'app/pedido/cancelado'(data){
@@ -144,6 +147,9 @@ export default {
         this.$q.notify(e)
       }, 'pedido/listar')
     },
+    'app/pedido/refresh' (data){
+      this.cargarFiltro()
+    }
   },
   methods:{
     realTime(id, producto, cantidad){
@@ -180,6 +186,7 @@ export default {
           pendiente: !row.pendiente
         }
         http(doc, result => {
+          this.$mqtt.publish('app/pedido/despachado', row.pendiente.toString())
           this.$mqtt.publish('app/pedido/' + row.usuarioId, 'cargar')
           this.cargarFiltro()
         }, e => {
@@ -188,6 +195,7 @@ export default {
       })
     },
     verPedido(row){
+      LocalStorage.remove('pedido')
       let doc = JSON.parse(JSON.stringify(row))
       doc.cliente = doc.usuario
       delete doc.usuario
@@ -208,6 +216,7 @@ export default {
       }).then(() => {
         http({pedido: row.id}, result => {
           if(row.pendiente == true && row.cancelado == false){
+            this.$mqtt.publish('app/pedido/despachado', 'true')
             let docs = JSON.parse(JSON.stringify(result.datos))
             docs.forEach(item => {
               this.eliminarItem(row.id, item)
@@ -245,6 +254,10 @@ export default {
     cambiarF2(date){
       this.fecha2 = this.$moment(date).startOf('day').unix()
       this.cargarFiltro()
+    },
+    nuevo(){
+      LocalStorage.remove('pedido');
+      this.$router.push('/app/pedido');
     }
   }
 }

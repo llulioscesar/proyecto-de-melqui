@@ -1,8 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-layout-header>
-      <q-toolbar
-        color="primary">
+      <q-toolbar color="yellow" class="text-black">
         <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen" aria-label="Menu">
           <q-icon name="menu" />
         </q-btn>
@@ -26,7 +25,7 @@
         <q-item to="/app/pedidos" exact>
           <q-item-main label="Pedidos"/>
           <q-item-side right>
-            <q-chip square color="primary" class="shadow-2">{{pendientes}}</q-chip>
+            <q-chip id="globo" square color="yellow" class="text-black shadow-2">{{pendientes}}</q-chip>
           </q-item-side>
         </q-item>
         <q-item to="/app/clientes" exact>
@@ -53,7 +52,7 @@
     </q-layout-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view style="background:url(statics/fondo1.jpg);background-size: cover;background-position: center;background-attachment: fixed;background-repeat:no-repeat"/>
     </q-page-container>
 
   </q-layout>
@@ -77,7 +76,7 @@ export default {
   },
   mqtt:{
     'app/pedido/cancelado' (data){
-      this.pendientes = this.pendientes - 1
+      this.cargar()
       this.$q.notify({
         message: 'Se ha cancelado un pedido',
         color: 'yellow-9'
@@ -86,22 +85,38 @@ export default {
       audio.play();
     },
     'app/pedido/nuevo' (data){
-      this.pendientes = this.pendientes + 1
+      this.cargar()
       this.$q.notify({
         message: 'Un nuevo pedido',
         color: 'primary'
       })
       var audio = new Audio('statics/noti.mp3');
       audio.play();
-    }
+    },
+    'app/pedido/despachado' (data, tema) {
+      var str = String.fromCharCode.apply(null, data);
+      switch(str){
+        case 'true':
+          if(this.pendientes > 0){
+            this.pendientes = this.pendientes - 1
+          }
+          break
+        case 'false':
+          this.pendientes = this.pendientes + 1
+          break
+      }
+    },
   },
   beforeDestroy(){
     this.$mqtt.unsubscribe('app/pedido/cancelado')
     this.$mqtt.unsubscribe('app/pedido/nuevo')
+    this.$mqtt.unsubscribe('app/pedido/despachado')
   },
   mounted(){
     this.$mqtt.subscribe('app/pedido/cancelado', {qos:1})
     this.$mqtt.subscribe('app/pedido/nuevo', {qos:1})
+    this.$mqtt.subscribe('app/pedido/despachado', {qos:1})
+    
     this.cargar()
   },
   beforeMount() {
@@ -139,5 +154,22 @@ export default {
 .img-producto {
   object-fit: cover;
   object-position: center;
+}
+.fondo1{
+  background: rgba(28,28,28,0.9);
+  border-radius: 5px;
+  color:white!important
+}
+.fondo1 input, .fondo1 th, .fondo1 td{
+  color:white!important
+}
+.fondo1 tr, .fondo1 td, .fondo1 thead{
+  border-color: rgba(255,255,255,0.12)!important
+}
+.fondo1 button{
+  /*color:black!important*/
+}
+.fondo1 canvas, .fondo1 .q-if, .fondo1 .q-input-target, .fondo1 .q-table-bottom{
+  color: white!important;
 }
 </style>

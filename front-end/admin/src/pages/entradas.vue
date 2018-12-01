@@ -1,8 +1,8 @@
 <template>
   <q-page padding>
-    <p class="q-mx-md">Control de existencias de productos</p>
+    <p class="q-pa-md fondo1">Control de existencias de productos</p>
 
-    <q-table :data="objs" :columns="columnas" row-key="name" :filter="search" :filter-method="myFilter">
+    <q-table class="fondo1" :data="objs" :columns="columnas" row-key="name" :filter="search" :filter-method="myFilter">
       <template slot="top-left" slot-scope="props">
         <q-search hide-underline placeholder="Buscar" v-model="search" />
       </template>
@@ -41,8 +41,8 @@
         </q-field>
         <div class="row justify-center q-mt-lg">
           <q-btn-group>
-            <q-btn color="primary" label="guardar" @click="ejecutar"></q-btn>
-            <q-btn color="primary" label="cerrar" @click="reset"/>
+            <q-btn color="yellow" label="guardar" @click="ejecutar"></q-btn>
+            <q-btn color="yellow" label="cerrar" @click="reset"/>
           </q-btn-group>
         </div>
       </div>
@@ -58,15 +58,15 @@
         </q-field>
         <div class="row justify-center q-mt-lg">
           <q-btn-group>
-            <q-btn color="primary" label="guardar" @click="ejecutar"></q-btn>
-            <q-btn color="primary" label="cerrar" @click="reset"/>
+            <q-btn color="yellow" label="guardar" @click="ejecutar"></q-btn>
+            <q-btn color="yellow" label="cerrar" @click="reset"/>
           </q-btn-group>
         </div>
       </div>
     </q-modal>
 
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn size="lg" round color="primary" icon="add" @click="dialogBuscar=true"/>
+      <q-btn size="lg" round color="yellow" class="txt-black" icon="add" @click="dialogBuscar=true"/>
     </q-page-sticky>
   </q-page>
 </template>

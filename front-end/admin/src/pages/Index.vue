@@ -1,22 +1,22 @@
 <template>
   <q-page padding>
-    <div class="row">
+    <div class="row fondo1">
       <div class="col-xs-12 col-md-3 q-mx-md">
-        <q-datetime v-model="f2" type="date" @change="cambiarF1"/>
+        <q-datetime color="yellow-7" v-model="f2" type="date" @change="cambiarF1"/>
       </div>
       <div class="col-xs-12 col-md-3 q-mx-md">
-        <q-datetime v-model="f1" type="date" @change="cambiarF2"/>
+        <q-datetime color="yellow-7" v-model="f1" type="date" @change="cambiarF2"/>
       </div>
     </div>
     
     
-    <div class="row q-mt-lg">
+    <div class="row q-mt-lg fondo1 q-pa-md">
       <div class="col-xs-12 col-md-12">
         <p>Vendido</p>
         <linea :chart-data="totales" :options="scale"/>
       </div>
     </div>
-    <div class="row q-mt-lg">
+    <div class="row q-mt-lg fondo1 q-pa-md">
       <div class="col-xs-12 col-md-7  round-borders">
         <p>Top 10 clientes</p>
         <bar :chart-data="compradores" :options="scale"/>
