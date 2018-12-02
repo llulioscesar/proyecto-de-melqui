@@ -164,7 +164,7 @@ router.post('/buscar', (req, res) => {
                 rol: "Cliente"
             },
             transaction: t,
-            attributes: ['id', 'cedula', 'nombre', 'direccion']
+            attributes: ['id', 'cedula', 'nombre', 'direccion', 'celular']
         })
     }).then(result => {
         res.json({

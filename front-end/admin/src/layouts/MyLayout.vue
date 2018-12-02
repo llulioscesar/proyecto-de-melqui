@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf" style="background:url(statics/fondo1.jpg);background-size: cover;background-position: center;background-attachment: fixed;background-repeat:no-repeat">
     <q-layout-header>
       <q-toolbar color="yellow" class="text-black">
         <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen" aria-label="Menu">
@@ -13,46 +13,48 @@
       </q-toolbar>
     </q-layout-header>
 
-    <q-layout-drawer
-      v-model="leftDrawerOpen"
-      :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null"
-    >
-      <q-list no-border link inset-delimiter >
+    <q-layout-drawer v-model="leftDrawerOpen" class="fondo1">
+      <q-list no-border link inset-delimiter class="bg-transparent">
         <q-list-header>Menu</q-list-header>
-        <q-item to="/app" exact>
-          <q-item-main label="Ventas"/>
-        </q-item>
-        <q-item to="/app/pedidos" exact>
+        <q-item class="menuapp" to="/app/pedidos" exact>
           <q-item-main label="Pedidos"/>
           <q-item-side right>
-            <q-chip id="globo" square color="yellow" class="text-black shadow-2">{{pendientes}}</q-chip>
+            <q-chip id="globo" square color="red" class="text-white shadow-2">{{pendientes}}</q-chip>
           </q-item-side>
         </q-item>
-        <q-item to="/app/clientes" exact>
+        <q-item class="menuapp" to="/app/clientes" exact>
           <q-item-main label="Clientes"/>
         </q-item>
         
-        <q-collapsible label="Inventario">
-          <q-item to="/app/entradas" exact>
+        <q-collapsible id="menu-inventario" class="menuapp" label="Inventario">
+          <q-item class="menuapp" to="/app/entradas" exact>
             <q-item-main label="Entradas"/>
           </q-item>
-          <q-item to="/app/inventario" exact>
+          <q-item class="menuapp" to="/app/inventario" exact>
             <q-item-main label="Existencias"/>
+          </q-item>
+          <q-item class="menuapp" to="/app/pedidos2" exact>
+            <q-item-main label="Pedidos"/>
           </q-item>
         </q-collapsible>
 
-        
-        <q-item to="/app/productos" exact>
+        <q-item class="menuapp" to="/app/proveedores" exact>
+          <q-item-main label="Proveedores"/>
+        </q-item>
+        <q-item class="menuapp" to="/app/productos" exact>
           <q-item-main label="Productos"/>
         </q-item>
-        <q-item to="/app/cuenta" exact>
+        <q-item class="menuapp" to="/app" exact>
+          <q-item-main label="Reportes"/>
+        </q-item>
+        <q-item class="menuapp" to="/app/cuenta" exact>
           <q-item-main label="Cuenta"/>
         </q-item>
       </q-list>
     </q-layout-drawer>
 
     <q-page-container>
-      <router-view style="background:url(statics/fondo1.jpg);background-size: cover;background-position: center;background-attachment: fixed;background-repeat:no-repeat"/>
+      <router-view/>
     </q-page-container>
 
   </q-layout>
@@ -171,5 +173,24 @@ export default {
 }
 .fondo1 canvas, .fondo1 .q-if, .fondo1 .q-input-target, .fondo1 .q-table-bottom{
   color: white!important;
+}
+.q-layout-drawer{
+  background: rgba(0,0,0,0.95)!important
+}
+.menuapp.router-link-active{
+  background: #ffeb3b!important;
+  color:black!important;
+}
+.menuapp:hover:not(.router-link-active){
+  background: rgba(255, 235, 59,0.5)!important;
+}
+#menu-inventario.q-collapsible-opened:hover{
+  background: none!important;
+}
+@media(max-width: 992px){
+  .q-layout-drawer{
+    color: black!important;
+    background: rgba(240,240,240,1)!important;
+  }
 }
 </style>

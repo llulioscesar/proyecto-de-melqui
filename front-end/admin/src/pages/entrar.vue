@@ -102,7 +102,7 @@ export default {
           if(user.rol == 'admin'){
             user.contraseña = this.clave
             this.$q.localStorage.set("usuario", user);
-            this.$router.push("/app");
+            this.$router.push("/app/pedidos");
           }else{
             this.$q.notify('No eres admin')
           }

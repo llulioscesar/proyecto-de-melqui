@@ -40,7 +40,7 @@
     <div class="row q-mt-md bg-primary q-pa-md round-borders text-white">
       
       <div class="col-md-12 col-xs-12">
-        <p>carga masiva (CSV)</p>
+        <p style="display: inline-block">carga masiva (CSV)</p> <q-btn @click="descargarF" class="q-ml-md text-black" color="white" label="Descargar formato"></q-btn>
       </div>
       <div class="col-md-12 col-xs-12">
         <input @change="loadCsv" type="file" id="csv" name="csv" accept=".csv" >
@@ -303,6 +303,9 @@ export default {
       this.selected = []
       window.scrollTo(0, 0);
     },
+    descargarF(){
+      window.open('admin/statics/formato.csv', '_blank')
+    },
     eliminar(id){
       this.$q.dialog({
         title: 'Eliminar producto',
@@ -336,7 +339,7 @@ export default {
         newline: "",	// auto-detect
         quoteChar: '"',
         escapeChar: '"',
-        header: false,
+        header: true,
         trimHeaders: false,
         dynamicTyping: false,
         preview: 0,

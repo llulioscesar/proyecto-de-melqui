@@ -1,11 +1,12 @@
-Poker;12120;330 ml;Cerveza;1850;2500;false
-Corona;1548;330 ml;Cerveza;2000;5000;false
-Baileys;78814;375 ml;Whisky;18000;27500;false
-Black & White;2354;375 ml;Whisky;15000;25000;false
-Old Parr;4514;750 ml;Whisky;85000;55000;false
-Old Parr;4248;500 ml;Whisky;45000;65000;false
-Budweiser botella;4584;250 ml;Cerveza;1450;2000;false
-Smirnoff Apple;9875;275 ml;Cerveza;3500;5000;false
-Don Julio blanco;1048;750 ml;Tequila;80000;100000;false
-El Mijador blanco;25185;750 ml;Tequila;35000;65000;false
-Bacardi Superior;35487;375 ml;Ron;12000;21000;false
+nombre,referencia,descripcion,categoria,precioCompra,precioVenta,estado
+Poker,12120,330 ml,Cerveza,1850,2500,false
+Corona,1548,330 ml,Cerveza,2000,5000,false
+Baileys,78814,375 ml,Whisky,18000,27500,false
+Black & White,2354,375 ml,Whisky,15000,25000,false
+Old Parr,4514,750 ml,Whisky,85000,55000,false
+Old Parr,4248,500 ml,Whisky,45000,65000,false
+Budweiser botella,4584,250 ml,Cerveza,1450,2000,false
+Smirnoff Apple,9875,275 ml,Cerveza,3500,5000,false
+Don Julio blanco,1048,750 ml,Tequila,80000,100000,false
+El Mijador blanco,25185,750 ml,Tequila,35000,65000,false
+Bacardi Superior,35487,375 ml,Ron,12000,21000,false

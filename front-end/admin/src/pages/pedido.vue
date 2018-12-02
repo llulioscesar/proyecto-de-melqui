@@ -107,6 +107,7 @@ export default {
       fecha: 0,
       total: 0,
       direccion: '',
+      pendiente: true,
       detalle: [],
       item: null,
       buscarP:'',
@@ -231,7 +232,8 @@ export default {
             label: cliente.nombre,
             sublabel: cliente.cedula,
             value: cliente.id,
-            direccion: cliente.direccion
+            direccion: cliente.direccion,
+            celular: cliente.celular
           }
         })
         done(lista)
@@ -245,7 +247,8 @@ export default {
         id: cliente.value,
         nombre: cliente.label,
         cedula: cliente.sublabel,
-        direccion: cliente.direccion
+        direccion: cliente.direccion,
+        celular: cliente.celular
       }
       this.direccion = cliente.direccion
       this.buscarC = cliente.label
@@ -259,7 +262,7 @@ export default {
           usuarioId: this.cliente.id,
           fecha: this.fecha,
           total: 0,
-          pendiente: true,
+          pendiente: this.pendiente,
           cancelado: false,
           direccion: this.direccion
         }
@@ -306,6 +309,7 @@ export default {
       this.mostrarP = false
       this.cantidad = 0
       this.subtotal = 0
+      this.pendiente = true
     },
     filtrarProducto(term, done){
       http({buscar: term}, result => {
@@ -383,7 +387,8 @@ export default {
         fecha: this.fecha,
         total: this.total,
         cliente: this.cliente,
-        detalle: this.detalle
+        detalle: this.detalle,
+        direccion: this.direccion
       })
       this.cargarExistencias()
     },
@@ -455,7 +460,21 @@ export default {
       }
     },
     imprimir(){
-      window.open('/admin/app/recibo', '_blank');
+      this.pendiente = false
+      let doc = {
+        id: this.id,
+        usuarioId: this.cliente.value,
+        total: this.total,
+        direccion: this.direccion,
+        pendiente: this.pendiente
+      }
+      http(doc, result => {
+        this.guardarTemp()
+        window.open('/admin/app/recibo', '_blank')
+        this.$router.push('/app/pedidos')
+      }, e => {
+        this.$q.notify(e)
+      }, 'pedido/actualizar')
     },
     cerrar(){
       this.$router.push('/app/pedidos')

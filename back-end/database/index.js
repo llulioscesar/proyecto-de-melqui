@@ -6,6 +6,10 @@ import Inventario from './inventario'
 import Pedido from './pedido'
 import DetallePedido from './detallePedido'
 
+import Proveedor from './proveedor'
+import PedidoProveedor from './pedidoProveedor'
+import DetallePedidoProveedor from './detallePedidoProveedor'
+
 
 // Relacion Producto => Inventario
 Producto.hasMany(Inventario, { foreignKey: 'productoId', onDelete: 'cascade' })
@@ -27,6 +31,18 @@ DetallePedido.belongsTo(Pedido, {foreignKey: 'pedidoId'})
 Usuario.hasMany(Pedido, {foreignKey: 'usuarioId', onDelete: 'cascade'})
 Pedido.belongsTo(Usuario, {foreignKey: 'usuarioId'})
 
+//****************************************************************************************** */
+// Proveedor => Pedido
+Proveedor.hasMany(PedidoProveedor, {foreignKey: 'proveedorId', onDelete: 'cascade'})
+PedidoProveedor.belongsTo(Proveedor, {foreignKey: 'proveedorId'})
+
+PedidoProveedor.hasMany(DetallePedidoProveedor, {foreignKey: 'pedidoProveedorId', onDelete: 'cascade'})
+DetallePedidoProveedor.belongsTo(PedidoProveedor, {foreignKey: 'pedidoProveedorId'})
+
+Producto.hasMany(DetallePedidoProveedor, {foreignKey: 'productoId', onDelete: 'cascade'})
+DetallePedidoProveedor.belongsTo(Producto, {foreignKey: 'productoId'})
+
+//****************************************************************************************** */
 export {
     sequelize,
     Producto,
@@ -34,5 +50,8 @@ export {
     Entrada,
     Inventario,
     Pedido,
-    DetallePedido
+    DetallePedido,
+    Proveedor,
+    DetallePedidoProveedor,
+    PedidoProveedor
 }

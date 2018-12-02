@@ -22,4 +22,9 @@ export default ({ Vue }) => {
 
     Vue.prototype.$auth = AUTH
     Vue.prototype.$firestore = FIRESTORE
+    Vue.prototype.$currency = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0
+      })
 }

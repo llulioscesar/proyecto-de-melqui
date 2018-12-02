@@ -189,12 +189,15 @@ export default {
           this.$mqtt.publish('app/pedido/despachado', row.pendiente.toString())
           this.$mqtt.publish('app/pedido/' + row.usuarioId, 'cargar')
           this.cargarFiltro()
+          if(row.pendiente){
+            this.verPedido(row, true)
+          }
         }, e => {
           this.$q.notify(e)
         }, 'pedido/actualizar')
       })
     },
-    verPedido(row){
+    verPedido(row, ok){
       LocalStorage.remove('pedido')
       let doc = JSON.parse(JSON.stringify(row))
       doc.cliente = doc.usuario
@@ -202,7 +205,11 @@ export default {
       http({pedido: row.id}, result => {
         doc.detalle = JSON.parse(JSON.stringify(result.datos))
         LocalStorage.set('pedido', doc)
-        this.$router.push('/app/pedido')
+        if(ok == undefined){
+          this.$router.push('/app/pedido')
+        }else{
+          window.open('/admin/app/recibo', '_blank')
+        }
       }, e => {
         this.$q.notify(e)
       }, 'detalle/pedido')

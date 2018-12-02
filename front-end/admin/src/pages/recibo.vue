@@ -35,6 +35,8 @@
     <br>
     <p class="text-center no-margin">Cliente: {{cliente.nombre}}</p>
     <p class="text-center no-margin">Cedula/Nit: {{cliente.cedula}}</p>
+    <p class="text-center no-margin">Direccion: {{direccion}}</p>
+    <p class="text-center no-margin">Celular: {{cliente.celular}}</p>
     <br>
     <p class="no-margin" style="max-width:80mm;text-overflow: clip;white-space: nowrap;overflow: hidden;">=======================================================================</p>
     <p class="text-center no-margin" style="font-size:10px">PROHIBIDA LA VENTA DE LICOR A MENORES DE EDAD</p>
@@ -56,6 +58,7 @@ export default {
     return {
       fecha: 0,
       detalle: [],
+      direccion: null,
       cliente: {
         label: '',
         sublabel: ''
@@ -76,6 +79,7 @@ export default {
     this.detalle = tem.detalle
     this.cliente = tem.cliente
     this.total = tem.total
+    this.direccion = tem.direccion
     setTimeout(()=> {
       if(LocalStorage.get.item('pedido') != null){
         window.print()

@@ -163,7 +163,7 @@ router.post('/masVendido', (req,res) => {
                 {
                     model: Producto,
                     as: 'producto',
-                    attributes: ['nombre']
+                    attributes: ['referencia','nombre','categoria']
                 },
                 {
                     model: Pedido,

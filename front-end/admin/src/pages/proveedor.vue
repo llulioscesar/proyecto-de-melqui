@@ -1,10 +1,10 @@
 <template>
   <q-page padding>
-    <p class="q-pa-md fondo1">Gestion de clientes</p>
+    <p class="q-pa-md fondo1">Gestion de proveedores</p>
 
     <div class="row fondo1 q-pt-md">
       <div class="col-xs-12 col-md-3">
-        <q-input color="yellow-7" class="q-mx-md" float-label="Cedula" v-model="cedula"></q-input>
+        <q-input color="yellow-7" class="q-mx-md" float-label="Nit" v-model="cedula"></q-input>
       </div>
       <div class="col-xs-12 col-md-3">
         <q-input color="yellow-7" class="q-mx-md" float-label="Nombre" v-model="nombre"></q-input>
@@ -20,9 +20,6 @@
       <div class="col-xs-12 col-md-3 ">
         <q-input color="yellow-7" class="q-mx-md" type="number" float-label="Celular" v-model="celular"></q-input>
       </div>
-      <div class="col-xs-12 col-md-3 ">
-        <q-input color="yellow-7" class="q-mx-md" type="password" float-label="Contraseña" v-model="contraseña"></q-input>
-      </div>
       <div class="col-xs-12 col-md-3 q-mt-md  ">
         <q-checkbox color="yellow-7" class="q-mx-md" label="Deshabilitado" v-model="deshabilitado"/>
       </div>
@@ -37,11 +34,11 @@
     <br>
     <q-table class="fondo1" :data="objs" :columns="columnas" :filter="buscar" :loading="cargandoT" row-key="name">
       <template slot="top-left" slot-scope="props">
-        <q-search hide-underline placeholder="Buscar cliente" v-model="buscar" />
+        <q-search hide-underline placeholder="Buscar proveedor" v-model="buscar" />
       </template>
       <q-tr slot="body" slot-scope="props" :props="props">
-        <q-td key="cedula" :props="props">
-          {{props.row.cedula}}
+        <q-td key="nit" :props="props">
+          {{props.row.nit}}
         </q-td>
         <q-td key="nombre" :props="props">
           {{props.row.nombre}}
@@ -88,9 +85,9 @@ export default {
       objs:[],
       columnas:[
         {
-          name: 'cedula',
-          field: 'cedula',
-          label: 'Cedula',
+          name: 'nit',
+          field: 'nit',
+          label: 'Nit',
           align: 'left',
           sortable: true
         },
@@ -141,11 +138,12 @@ export default {
   methods:{
     cargar(){
       http(null, result => {
-        this.objs = JSON.parse(JSON.stringify(result.datos))
+        console.log(result)
+        this.objs = JSON.parse(JSON.stringify(result))
         this.cargandoT = false
       }, e => {
         this.$q.notify(e)
-      }, 'usuario/clientes')
+      }, 'proveedor')
     },
     reset(){
       this.cargando = false
@@ -179,13 +177,12 @@ export default {
 
       let doc = {
         id: this.id,
-        cedula: this.cedula,
+        nit: this.cedula,
         nombre: this.nombre,
-        correo: this.correo,
+        correo: this.correo == "" ? null : this.correo,
         direccion: this.direccion,
-        celular: this.celular,
+        celular: this.celular == "" ? null : this.celular,
         deshabilitado: this.deshabilitado,
-        contraseña: this.contraseña,
         rol: 'cliente',
         uid: this.uid
       }
@@ -194,11 +191,9 @@ export default {
         this.$q.notify('Ingrese un numero de cedula')
       } else if(this.nombre == ''){
         this.$q.notify('Ingrese el nombre del cliente')
-      }else if(this.correo == ''){
-        this.$q.notify('Ingrese el correo del cliente')
       }else if(this.direccion == ''){
         this.$q.notify('Ingrese la direccion del cliente')
-      } else if(!this.isEmail(this.correo)){
+      } else if(!this.isEmail(this.correo) && this.correo != ""){
         this.$q.notify('Ingrese una direccion de correo valida')
       } else{
         this.cargando = true
@@ -210,13 +205,11 @@ export default {
           }, e => {
             this.$q.notify(e)
             this.cargando = false
-          }, 'usuario/editar')
+          }, 'proveedor/editar')
 
         }else{
           if (ok){
-            this.$q.notify('La cedula ya existe')
-          } else if(this.contraseña == ''){
-            this.$q.notify('Ingrese una contraseña para el cliente')
+            this.$q.notify('El nit ya existe')
           } else{
             this.cargando = true
             http(doc, result => {
@@ -226,7 +219,7 @@ export default {
               }, e => {
                 this.cargando = false
                 this.$q.notify(e)
-              }, 'usuario/insertar')
+              }, 'proveedor/insertar')
           }
         }
       }
@@ -237,21 +230,21 @@ export default {
       this.id = temp.id
       this.uid = temp.uid
       this.nombre = temp.nombre
-      this.correo = temp.correo
-      this.cedula = temp.cedula
-      this.celular = temp.celular
+      this.correo = temp.correo == null ? '' : temp.correo
+      this.cedula = temp.nit
+      this.celular = temp.celular == null ? '' : temp.celular
       this.direccion = temp.direccion
       this.deshabilitado = temp.deshabilitado
       window.scrollTo(0, 0);
     },
     eliminar(row){
       this.$q.dialog({
-        title: 'Deshabilitar cliente',
-        message: '¿Desea eliminar el cliente?',
+        title: 'Proveedor',
+        message: '¿Desea eliminar el proveedor?',
         ok: 'Si',
         cancel: 'No'
       }).then(() => {
-        http({id: row.id, uid: row.uid, deshabilitado: true,celular:'',contraseña:''},result => {
+        http({id: row.id, deshabilitado: true},result => {
           this.reset()
           this.cargandoT = true
           this.objs = this.objs.filter(element => element.uid != row.uid)
@@ -259,7 +252,7 @@ export default {
         }, e => {
           this.cargando = false
           this.$q.notify(e)
-        }, 'usuario/eliminar')
+        }, 'proveedor/eliminar')
       })
     },
     isEmail(correo) {

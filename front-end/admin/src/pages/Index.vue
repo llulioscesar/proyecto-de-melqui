@@ -19,11 +19,11 @@
     <div class="row q-mt-lg fondo1 q-pa-md">
       <div class="col-xs-12 col-md-7  round-borders">
         <p>Top 10 clientes</p>
-        <bar :chart-data="compradores" :options="scale"/>
+        <bar :chart-data="compradores" :options="scaleCompradores"/>
       </div>
       <div class="col-xs-12 col-md-5  round-borders">
         <p>Top 10 de producto mas vendidos</p>
-        <torta :chart-data="vendidos" :options="{responsive: true, maintainAspectRatio: false}"/>
+        <torta :chart-data="vendidos" :options="scaleProducto"/>
       </div>
     </div>
     
@@ -51,6 +51,8 @@ export default {
       f2: null,
       fecha1: 0,
       fecha2: 0,
+      infoCompradores: [],
+      infoProductos: [],
       vendidos: {
         labels: [],
         datasets: [
@@ -79,6 +81,40 @@ export default {
               }
             }
           ]
+        }
+      },
+      scaleProducto: {
+        responsive: true, 
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [
+          {
+            ticks: {
+              suggestedMin: 0,
+              beginAtZero: true
+              }
+            }
+          ]
+        },
+        onClick: event => {
+          this.rProductos()
+        }
+      },
+      scaleCompradores: {
+        responsive: true, 
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [
+          {
+            ticks: {
+              suggestedMin: 0,
+              beginAtZero: true
+              }
+            }
+          ]
+        },
+        onClick: event => {
+          this.rCompradores()
         }
       },
       colores: ['#e53935', '#3949ab','#00897b','#fdd835','#fb8c00','#039be5', '#8e24aa', '#d81b60', '#5e35b1'],
@@ -116,6 +152,7 @@ export default {
             }
           ]
         }
+        this.infoProductos = JSON.parse(JSON.stringify(result.datos))
         result.datos.forEach(item => {
           doc.labels.push(item.producto.nombre)
           doc.datasets[0].data.push(item.cantidad)
@@ -139,11 +176,40 @@ export default {
             }
           ]
         }
-        result.datos.forEach(item => {
+
+        let pedidos = []
+
+        for (let i = 0; i < result.datos.length; i++) {
+          for (let j = 0; j < result.datos.length; j++) {
+            if(result.datos[i].usuario.id == result.datos[j].usuario.id && result.datos[i].id == result.datos[j].id){
+              
+              let ok = false
+              pedidos.forEach(element => {
+                if(element.usuario.id == result.datos[j].usuario.id){
+                  element.pedidos.push(result.datos[j].id)
+                  element.cantidad = parseInt(element.cantidad) + 1
+                  ok = true
+                }
+              })
+              if(ok == false){
+                pedidos.push({
+                  pedidos: [result.datos[j].id],
+                  cantidad: 1,
+                  usuario: result.datos[j].usuario
+                })
+              }
+            }
+          }
+        }
+
+        this.infoCompradores = pedidos
+
+        pedidos.forEach(item => {
           doc.labels.push(item.usuario.nombre)
           doc.datasets[0].data.push(item.cantidad)
         })
-        this.compradores =doc
+        
+        this.compradores = doc
         
       }, e => {
 
@@ -183,7 +249,6 @@ export default {
 
          
         })
-        console.log(result.datos)
         this.totales = doc
       },e => {
 
@@ -200,6 +265,25 @@ export default {
       this.masVendido()
       this.masComprador()
       this.total()
+    },
+    rCompradores(){
+      let ids = []
+      this.infoCompradores.forEach(element => {
+        let id = element.pedidos.map(num => {
+          return num
+        })
+        ids = ids.concat(id)
+      })
+      http({ids: ids}, result => {
+        this.$q.localStorage.set('infoComprador', result)
+        this.$router.push('/app/reporte/comprador')
+      }, e => {
+        this.$q.notify(e)
+      }, 'pedido/reporte/comprador')
+    },
+    rProductos(){
+      this.$q.localStorage.set('infoProductos', JSON.parse(JSON.stringify(this.infoProductos)))
+      this.$router.push('/app/reporte/producto')
     }
   }
 }

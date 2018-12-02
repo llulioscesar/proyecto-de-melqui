@@ -15,12 +15,22 @@ const routes = [
       { path: 'entradas', component: () => import('pages/entradas.vue')},
       { path: 'productos', component: () => import('pages/productos.vue')},
       { path: 'cuenta', component: () => import('pages/cuenta.vue')},
-      { path: 'pedido', component: () => import('pages/pedido.vue')}
+      { path: 'pedido', component: () => import('pages/pedido.vue')},
+      { path: 'pedidos2', component: () => import('pages/pedidos2.vue')},
+      { path: 'proveedores', component: () => import('pages/proveedor.vue')},
     ]
   },
   {
     path: '/app/recibo',
     component: () => import('pages/recibo.vue')
+  },
+  {
+    path: '/app/reporte/comprador', 
+    component:() => import('pages/reportComprador')
+  },
+  {
+    path: '/app/reporte/producto', 
+    component:() => import('pages/reportProducto')
   }
 ]
 

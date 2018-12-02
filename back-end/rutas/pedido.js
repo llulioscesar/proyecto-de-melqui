@@ -1,5 +1,5 @@
 import express from 'express'
-import {sequelize, Pedido, DetellePedido, Usuario} from '../database'
+import {sequelize, Pedido, DetallePedido, Usuario, Producto} from '../database'
 import error from '../funciones/error'
 import Sequelize from 'sequelize'
 
@@ -95,7 +95,7 @@ router.post('/listar', (req, res) => {
             include: [
                 {
                     model: Usuario,
-                    attributes:['id','cedula', 'nombre','direccion']
+                    attributes:['id','cedula', 'nombre','direccion', 'celular']
                 }
             ],
             transaction: t
@@ -179,19 +179,20 @@ router.post('/masComprador', (req,res) => {
                 cancelado: false
             },
             attributes: [
-                'fecha',
-                [sequelize.fn('COUNT', sequelize.col('usuarioId')),'cantidad']
+                'id',
+                //'fecha',
+                //[sequelize.fn('COUNT', sequelize.col('usuarioId')),'cantidad']
             ],
             include: [
                 {
                     model: Usuario,
                     as: 'usuario',
-                    attributes: ['nombre']
+                    attributes: ['id','nombre']
                 },
             ],
-            group:['usuarioId'],
-            //order:[['cantidad', 'DESC']],
-            order: sequelize.literal('cantidad DESC'),
+            //group:['usuarioId'],
+            order:[['id', 'DESC']],
+            //order: sequelize.literal('cantidad DESC'),
             limit: 10,
             transaction: t
         })
@@ -232,6 +233,39 @@ router.post('/total', (req,res) => {
         res.json({
             datos: result
         })
+    }).catch(e => {
+        res.status(500).json(error(e))
+    })
+})
+
+router.post('/reporte/comprador', (req, res) => {
+    return Pedido.findAll({
+        where: {
+            id: {
+                [Op.in]: req.body.ids
+            }
+        },
+        include: [
+            {
+                model: DetallePedido,
+                include:[
+                    {
+                        model: Producto,
+                        attributes: [
+                            'nombre',
+                            'referencia',
+                            'id'
+                        ]
+                    }
+                ]
+            },
+            {
+                model: Usuario
+            }
+        ],
+        order:[['fecha', 'DESC']]
+    }).then(result => {
+        res.json(result)
     }).catch(e => {
         res.status(500).json(error(e))
     })
