@@ -60,7 +60,7 @@ router.post('/buscar', (req, res) => {
                         [Op.like]: '%' + req.body.buscar + '%'
                     }
                 },
-                rol: "Cliente"
+                deshabilitado: false
             },
             transaction: t,
             attributes: ['id', 'nit', 'nombre', 'direccion', 'celular']

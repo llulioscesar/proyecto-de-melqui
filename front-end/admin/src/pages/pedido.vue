@@ -30,8 +30,8 @@
       <q-btn-group>
         <q-btn :disabled="cliente==null || id!=0" color="primary" label="Guardar" @click="guardarPedido"/>
         <!--<q-btn :disabled="id==0" color="primary" label="Eliminar" @click="eliminarPedido"/>-->
-        <q-btn :disabled="total ==0" color="primary" label="Cerrar" @click="cerrar"/>
-        <q-btn :disabled="total ==0" color="primary" label="Imprimir" @click="imprimir"/>
+        <q-btn :disabled="total == 0" color="primary" label="Cerrar" @click="cerrar"/>
+        <q-btn :disabled="total == 0" color="primary" label="Imprimir" @click="imprimir"/>
       </q-btn-group>
     </div>
 

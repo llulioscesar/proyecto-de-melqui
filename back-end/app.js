@@ -48,7 +48,7 @@ app.use(function (req, res, next) {
 
   // respond with json
   if (req.headers['content-type'] == 'application/json') {
-    res.send({ error: true, mensaje: 'No encontrado' });
+    res.status(404).send({ error: true, mensaje: 'No encontrado' });
     return;
   } else {
     next(err);
