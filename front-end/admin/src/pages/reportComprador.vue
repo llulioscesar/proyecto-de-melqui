@@ -6,13 +6,13 @@
           <q-btn class="no-shadow" icon="arrow_back" @click="$router.push('/app')"></q-btn>
           <q-toolbar-title>
             Mr Tata
-            <div slot="subtitle">Reporte top compradores</div>
+            <div slot="subtitle">Reporte Ventas</div>
           </q-toolbar-title>
         </q-toolbar>
       </q-layout-header>
       <q-page padding>
         <div id="pdf" ref="pdf" class="bg-white q-py-xs q-px-md" style="max-width:720px;width:100%;margin:auto;">
-          <h5>Reporte top compradores</h5>
+          <h5>Reporte Ventas</h5>
           <div v-for="(item,i) in info" :key="i" class="q-pa-md ritem q-mb-lg" style="border:1px solid black">
             <p><strong>Fecha:</strong> {{$moment.unix(item.fecha).format('DD [de] MMMM [de] YYYY')}} </p>
             <p class="q-mt-xs"><strong>Cliente:</strong> {{item.usuario.nombre}}</p>

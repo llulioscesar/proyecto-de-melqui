@@ -31,6 +31,9 @@
           <q-td :props="props" key="nit">
             {{props.row.proveedor.nit}}
           </q-td>
+          <q-td :props="props" key="total">
+            {{$currency.format(props.row.total)}}
+          </q-td>
           <q-td :props="props" key="estado">
             {{props.row.cancelado ? 'Cancelado' : props.row.pendiente ? 'Pendiente': 'Recibido'}}
           </q-td>
@@ -81,6 +84,10 @@ export default {
           field: row => row.proveedor.nit,
           align: 'left',
           sortable: true
+        },
+        {
+          name: 'total',
+          label: 'Total'
         },
         {
           name: 'estado',

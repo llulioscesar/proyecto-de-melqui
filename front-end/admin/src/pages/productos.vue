@@ -304,7 +304,7 @@ export default {
       window.scrollTo(0, 0);
     },
     descargarF(){
-      window.open('admin/statics/formato.csv', '_blank')
+      window.open('statics/formato.csv', '_blank')
     },
     eliminar(id){
       this.$q.dialog({

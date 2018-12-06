@@ -5,7 +5,8 @@
       <q-field label="No. Pedido">{{pedido.id}}</q-field>
       <q-field label="Proveedor">{{pedido.proveedor.nombre}}</q-field>
       <q-field label="Nit">{{pedido.proveedor.nit}}</q-field>
-      <q-field label="Fecha">{{$moment.unix(pedido.fecha).format('MMMM DD [de] YYYY')}}</q-field>      
+      <q-field label="Fecha">{{$moment.unix(pedido.fecha).format('MMMM DD [de] YYYY')}}</q-field>    
+      <q-field label="Total">{{$currency.format(pedido.total)}}</q-field>  
     </div>
 
     <div class="fondo1 q-mb-lg q-pa-md">
@@ -28,8 +29,14 @@
           <q-td :props="props" key="categoria">
             {{props.row.producto.categoria}}
           </q-td>
+          <q-td :props="props" key="precio">
+            {{$currency.format(props.row.producto.precioCompra)}}
+          </q-td>
           <q-td :props="props" key="cantidad">
             {{props.row.cantidad1}}
+          </q-td>
+          <q-td :props="props" key="total">
+            {{$currency.format(props.row.cantidad1 * props.row.producto.precioCompra)}}
           </q-td>
           <q-td :props="props" key="cargada">
             {{props.row.cantidad2}}
@@ -78,9 +85,17 @@ export default {
           align: 'left'
         },
         {
+          name: 'precio',
+          label: 'precio'
+        },
+        {
           name: 'cantidad',
           label: 'Cantidad',
           align: 'right'
+        },
+        {
+          name: 'total',
+          label: 'Total'
         },
         {
           name: 'cargada',

@@ -53,6 +53,7 @@ export default {
       fecha2: 0,
       infoCompradores: [],
       infoProductos: [],
+      infoVenta:[],
       vendidos: {
         labels: [],
         datasets: [
@@ -81,6 +82,9 @@ export default {
               }
             }
           ]
+        },
+        onClick: event => {
+          this.rVenta();
         }
       },
       scaleProducto: {
@@ -227,6 +231,9 @@ export default {
             }
           ]
         }
+
+       let tDoc = []
+
         result.datos.forEach(item => {
           let mes = this.$moment.unix(item.fecha).format('MMMM')
           let m = doc.labels
@@ -243,16 +250,26 @@ export default {
           if(ok == false){
             doc.labels.push(mes)
             doc.datasets[0].data.push(parseFloat(item.total))
+            tDoc.push({
+              mes: mes,
+              total: parseFloat(item.total)
+            })
           } else{
+            tDoc[pos].total = parseFloat(doc.datasets[0].data[pos]) + parseFloat(item.total)
             doc.datasets[0].data[pos] = parseFloat(doc.datasets[0].data[pos]) + parseFloat(item.total)
           }
 
          
         })
+        this.infoVenta = tDoc
         this.totales = doc
       },e => {
 
       },'pedido/total')
+    },
+    rVenta(){
+      this.$q.localStorage.set('infoVenta', JSON.parse(JSON.stringify(this.infoVenta)))
+      this.$router.push('/app/reporte/venta')
     },
     cambiarF1(date){
       this.fecha2 = this.$moment(date).startOf('day').unix()

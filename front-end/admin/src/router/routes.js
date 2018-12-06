@@ -32,6 +32,10 @@ const routes = [
   {
     path: '/app/reporte/producto', 
     component:() => import('pages/reportProducto')
+  },
+  {
+    path: '/app/reporte/venta', 
+    component:() => import('pages/reportVenta')
   }
 ]
 

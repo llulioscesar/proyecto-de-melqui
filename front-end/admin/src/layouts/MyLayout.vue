@@ -78,22 +78,33 @@ export default {
   },
   mqtt:{
     'app/pedido/cancelado' (data){
-      this.cargar()
-      this.$q.notify({
-        message: 'Se ha cancelado un pedido',
-        color: 'yellow-9'
-      })
-      var audio = new Audio('statics/noti.mp3');
-      audio.play();
+      http(null, result => {
+        this.pendientes = result.datos
+          this.$q.notify({
+          message: 'Se ha cancelado un pedido',
+          color: 'yellow-9'
+        })
+        var audio = new Audio('statics/noti.mp3');
+        audio.play();
+      }, e => {
+
+      }, 'pedido/pendientes')
+      
+      
     },
     'app/pedido/nuevo' (data){
-      this.cargar()
-      this.$q.notify({
-        message: 'Un nuevo pedido',
-        color: 'primary'
-      })
-      var audio = new Audio('statics/noti.mp3');
-      audio.play();
+      http(null, result => {
+        this.pendientes = result.datos
+        this.$q.notify({
+          message: 'Un nuevo pedido',
+          color: 'primary'
+        })
+        var audio = new Audio('statics/noti.mp3');
+        audio.play();
+      }, e => {
+
+      }, 'pedido/pendientes')
+      
     },
     'app/pedido/despachado' (data, tema) {
       var str = String.fromCharCode.apply(null, data);

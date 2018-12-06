@@ -122,13 +122,13 @@
           this.cargar()
         }
       },
-      'app/+' (data, tema){
+      /*'app/+' (data, tema){
         let msj = String.fromCharCode.apply(null, data)
         console.log(tema)
         if(tema == 'app/' + this.$q.localStorage.get.item('usuario').id){
           this.salir()
         }
-      }
+      }*/
     },
     methods:{
       refresher(done){
