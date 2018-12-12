@@ -216,19 +216,27 @@ export default {
         datos.celular = ''
       }
 
-      console.log(datos)
+      let ok = true
 
       if(this.usuario.cedula == '' || this.usuario.cedula == null || this.usuario.cedula == undefined){
         this.$q.notify('Proporciona tu documento de identificacion')
+        ok = false
       } else if(this.usuario.nombre == '' || this.usuario.nombre == null || this.usuario.nombre == undefined){
         this.$q.notify('Proporciona un nombre')
+        ok = false
       }else if(this.usuario.direccion == '' || this.usuario.direccion == null || this.usuario.direccion == undefined){
         this.$q.notify('Proporciona una direccion')
+        ok = false
       }else if(this.usuario.celular != '' && this.usuario.celular != null){
         if(this.usuario.celular.length < 10){
           this.$q.notify('Numero de celular incompleto')
+          ok = false
+        }else{
+          ok = true
         }
-      } else {
+      }
+
+      if (ok){
         http('usuario/editar', datos, result => {
             this.$q.localStorage.set('usuario', JSON.parse(JSON.stringify(this.usuario)))
             this.isDatos = false

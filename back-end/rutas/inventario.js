@@ -25,12 +25,8 @@ router.post('/', (req, res) => {
 router.post('/pedido', (req, res) => {
     return sequelize.transaction(t => {
         return Inventario.findAll({
-            where:{
-                stock:{
-                    [Op.lte]: 30
-                }
-            },
             include: [Producto],
+            order:[['stock','ASC']],
             transaction: t
         })
     }).then(result => {

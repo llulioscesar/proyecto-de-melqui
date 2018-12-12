@@ -33,12 +33,12 @@
           <q-item class="menuapp" to="/app/inventario" exact>
             <q-item-main label="Existencias"/>
           </q-item>
-          <q-item class="menuapp" to="/app/pedidos2" exact>
+          <!----><q-item class="menuapp" to="/app/pedidos2" exact>
             <q-item-main label="Pedidos"/>
           </q-item>
         </q-collapsible>
 
-        <q-item class="menuapp" to="/app/proveedores" exact>
+        <!----><q-item class="menuapp" to="/app/proveedores" exact>
           <q-item-main label="Proveedores"/>
         </q-item>
         <q-item class="menuapp" to="/app/productos" exact>
@@ -57,6 +57,13 @@
       <router-view/>
     </q-page-container>
 
+    <!--
+    <div v-if="f1 >= f2" style="position:absolute;bottom:16px;left:16px;z-index: 100000;border-radius:5px;" class="q-pa-md text-black bg-red">
+      Proyecto sin pagar
+      <p style="font-size:9px;margin:0">Julio Cesar Caicedo Santos</p>
+    </div>
+    -->
+
   </q-layout>
 </template>
 
@@ -74,6 +81,8 @@ export default {
     return {
       leftDrawerOpen: this.$q.platform.is.desktop,
       pendientes: 0,
+      f1:0,
+      f2:1544287200
     };
   },
   mqtt:{
@@ -129,7 +138,9 @@ export default {
     this.$mqtt.subscribe('app/pedido/cancelado', {qos:1})
     this.$mqtt.subscribe('app/pedido/nuevo', {qos:1})
     this.$mqtt.subscribe('app/pedido/despachado', {qos:1})
-    
+
+    this.f1 = this.$moment().unix()
+
     this.cargar()
   },
   beforeMount() {

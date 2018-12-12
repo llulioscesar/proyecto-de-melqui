@@ -147,6 +147,7 @@ export default {
     },
     reset(){
       this.cargando = false
+      this.cargandoT = false
       this.editar = false
       this.id = 0
       this.uid = 0
@@ -244,11 +245,11 @@ export default {
         ok: 'Si',
         cancel: 'No'
       }).then(() => {
+        this.cargandoT = true
         http({id: row.id, deshabilitado: true},result => {
-          this.reset()
-          this.cargandoT = true
           this.objs = this.objs.filter(element => element.uid != row.uid)
           this.cargandoT = false
+          this.reset()
         }, e => {
           this.cargando = false
           this.$q.notify(e)

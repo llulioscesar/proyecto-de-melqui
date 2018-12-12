@@ -103,14 +103,14 @@ export default {
     }
   },
   beforeDestroy(){
-    this.$mqtt.unsubscribe('app/pedido/cancelado')
-    this.$mqtt.unsubscribe('app/pedido/nuevo')
-    this.$mqtt.unsubscribe('app/pedido/refresh')
+    //this.$mqtt.unsubscribe('app/pedido/cancelado')
+    //this.$mqtt.unsubscribe('app/pedido/nuevo')
+    //this.$mqtt.unsubscribe('app/pedido/refresh')
   },
   mounted(){
-    this.$mqtt.subscribe('app/pedido/cancelado', {qos:1})
-    this.$mqtt.subscribe('app/pedido/nuevo', {qos:1})
-    this.$mqtt.subscribe('app/pedido/refresh')
+    //this.$mqtt.subscribe('app/pedido/cancelado', {qos:1})
+    //this.$mqtt.subscribe('app/pedido/nuevo', {qos:1})
+    //this.$mqtt.subscribe('app/pedido/refresh')
     let f1 = this.$moment().startOf('day')
     let f2 = this.$moment(f1).subtract(7, 'days')
     this.f2 = f1.toDate()

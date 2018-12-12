@@ -42,6 +42,10 @@
 
     </q-table>
 
+    <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <q-btn size="lg" round color="yellow" class="txt-black" icon="add" @click="$router.push('/app/inventario')"/>
+    </q-page-sticky>
+
   </q-page>
 </template>
 

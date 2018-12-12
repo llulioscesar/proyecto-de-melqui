@@ -19,6 +19,9 @@ const routes = [
       { path: 'pedidos2', component: () => import('pages/pedidos2.vue')},
       { path: 'pedido2', component: () => import('pages/pedido2.vue')},
       { path: 'proveedores', component: () => import('pages/proveedor.vue')},
+      //
+      //
+      //
     ]
   },
   {

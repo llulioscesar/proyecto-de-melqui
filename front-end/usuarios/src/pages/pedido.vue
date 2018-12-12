@@ -37,7 +37,7 @@
               Total: ${{(parseFloat(total)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') }}
             </div>
             <div class="col-xs-3">
-              <q-btn outline round class="no-border" color="primary" icon="save" @click.native="enviarPedido"/>
+              <q-btn color="primary" @click.native="enviarPedido">Enviar</q-btn>
               <q-btn outline round class="no-border" color="negative" icon="delete" @click.native="eliminarPedido"/>
             </div>
           </div>

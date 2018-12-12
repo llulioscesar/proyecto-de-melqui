@@ -149,7 +149,7 @@ export default {
           let lista = result.datos.map(item => {
             return {
               label: item.nombre,
-              sublabel: item.categoria,
+              sublabel: item.categoria + ' - ' + item.descripcion,
               avatar: item.foto,
               value: item.id,
               referencia: item.referencia,

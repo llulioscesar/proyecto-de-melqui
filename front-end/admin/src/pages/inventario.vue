@@ -1,7 +1,14 @@
 <template>
   <q-page padding>
     <div class="fondo1 q-mb-md q-pa-md">Existencias
-      <q-checkbox class="q-ml-xl" color="yellow-7" v-model="pedido" label="Para pedido" @input="cambiar"></q-checkbox>
+      <!---->
+      <q-checkbox 
+      class="q-ml-xl" 
+      color="yellow-7" 
+      v-model="pedido" 
+      label="Para pedido" 
+      @input="cambiar"/>
+      
       <span v-if="pedido == true" class="q-ml-md">Total: {{$currency.format(total)}}</span>
       <q-btn @click="guardar" class="text-black q-ml-lg" v-if="pedido==true" :disabled="proveedor == null" color="yellow" label="guardar pedido"></q-btn>
       <q-search v-if="pedido == true" class="q-mx-md" v-model="buscarP" float-label="Proveedor" placeholder="Buscar Proveedor">
